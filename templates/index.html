@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Task Master</title>
+{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    {% block body %}
+    <div>
+        <h1>Home Page</h1>
+        <p>Hello,{{ name }}!</p>
+    </div>
+        <div class="center_things">
+            <div class="input_form">
+                <h1 class="input_text">
+                    <form>
+                        <label for="fname">text input</label><br>
+                        <input type="text" id="write" name="something"><br>
+                    </form>
+                </h1>
+                <h1 class="input_img">
+                    <form>
+                        <label for="fname">image input</label><br>
+                        <input type="text" id="write" name="something"><br>
+                    </form>
+                </h1>
+            </div>
+
+        <button type="button" onClick="window.location.href='{{ url_for('views.profile')}}';">submit!</button>
+        </div>
+    {% endblock %}
+</body>
+<script type="module"
+            src= "{{ url_for('static',filename='index.js')}}">
+    </script>
+</html>

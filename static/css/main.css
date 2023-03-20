@@ -1,0 +1,43 @@
+body{
+    margin:0;
+    height: 100%;
+    width:100%;
+    font-family: sans-serif;
+    background-image: url("./assets/bk.jpg");
+    background-position: center center;
+    background-repeat: repeat;
+    background-size: cover;
+    }
+
+.img_block{
+    position: center;
+    color: white;
+}
+.h1{
+    font-size: 50%;
+}
+.center_things{
+    padding: 20px;
+    align-content: center;
+    flex-direction: column;
+    display: flex;
+    width: 15rem;
+}
+.img_container{
+    padding: 10px;
+    align-content: center;
+}
+.input_form{
+    align-items: baseline;
+    align-content: center;
+    flex-direction: column;
+    display: flex;
+}
+.logo_block{
+    background: wheat;
+    flex-direction: column;
+}
+
+.retry{
+    font-size: 14px;
+}
