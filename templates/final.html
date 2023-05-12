@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block head %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+{% endblock %}
+{% block body %}
+
+<body>
+<div class="page-top">
+        <div class="title-box">
+            <h1 class="title-text"> Title of the game </h1>
+        </div>
+</div>
+ <p style="color: red">final page</p>
+<div class="img_container_compare" id="comparison">
+    <div class="row mh-100">
+        <div class="col mw-100 h-100 d-flex align-items-center justify-content-center"
+             style="border-right: black dashed 2px">
+            <img src="{{painting}}"  class="img-fluid img-center" style="object-fit: cover" id="zoomedImage" >
+        </div>
+        <div class="col mw-100 h-100 d-flex align-items-center  justify-content-center"
+            style="border-left: black dashed 2px">
+            <img src="{{original}}"  class="img-fluid img-center" style="object-fit: cover" id="zoomedImage1">
+        </div>
+    </div>
+
+</div>
+<div class="footer col mt-5 align-content-center">
+    <h1 class="text-center"> Go back to select another painting to reproduce</h1>
+    <div class="startBlock" >
+        <button class="EndButton" id="is-btn" style="font-size:30px;position: center" onclick="window.location.href='{{ url_for('views.start') }}'">
+            <span>CLick me</span>
+        </button>
+    </div>
+</div>
+</body>
+{% endblock %}
+{% block script %}
+    <script type="module" src="{{ url_for('static',filename='js/index.js')}}"></script>
+     <script type="module" src="{{ url_for('static',filename='js/final.js')}}"></script>
+{% endblock %}
+</html>

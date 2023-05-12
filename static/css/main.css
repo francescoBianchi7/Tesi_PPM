@@ -1,3 +1,5 @@
+
+
 body{
     margin:0;
     height: 100%;
@@ -8,31 +10,232 @@ body{
     background-repeat: repeat;
     background-size: cover;
     }
+/*START.HTML*/
+.start_borders{
+     border-style: ridge;
+    border-width: 10px;
+    border-color: black;
+    border-radius: 20%;
+    background-color: floralwhite;
+
+}
+
+.description_block{
+    width: 90%;
+    font-size: large;
+    font-style: italic;
+    text-align: center;
+    position: center;
+    margin-left: 5%;
+    padding: 20px;
+}
+
+.selector-block{
+    width: 90%;
+    margin-left: 5%;
+    padding-top: 10px;
+    padding-bottom: 1rem;
+    padding-left: 5px;
+    align-items: center;
+    align-content: center;
+    position: center;
+}
+.selector-form{
+    font-style: oblique;
+    font-weight: revert;
+    font-size: larger;
+    align-items: center;
+    text-align: center;
+}
+
+.select-ddb{
+    align-self: start;
+}
+
+.startBlock{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.startButton {
+  position: inherit;
+  border: 3.8px solid #000000;
+  border-radius:60px;
+  padding:19.4px;
+  margin-left:23.7px;
+  background-color:#52F984;
+  color:#000000;
+  font-weight:bold;
+  opacity:1;
+  transition:2.7s;
+}
+/* end START.HTML*/
+.welcome_block{
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    font-size: 15px;
+    text-decoration-color: darkred;
+    color: darkred;
+}
+.ddb_container{
+    border-style: wave;
+    border-radius: 20px;
+    border: black;
+    background-color:white;
+    margin-left: 1rem;
+    margin-right: 1rem;
+
+    padding: 20px;
+    position: center;
+    align-content: center;
+    flex-direction: column;
+    display: block;
+}
+.page-top{
+    text-align: center;
+    display: flex;
+    padding-bottom: 30px;
+}
+.title-box{
+    position: relative;
+    text-transform: uppercase;
+    font-family: 'Rancho', cursive;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: wheat;
+
+  }
+.instruction-box{
+    position: relative;
+    align-items: flex-end;
+    padding-bottom: 2rem;
+}
+.instruction-box h1{
+    font-style: oblique;
+    font-size: 15px;
+    color: dimgrey;
+}
+
+/*istr btn START*/
+.instructions-btn{
+  display: inline-block;
+  border-radius: 4px;
+  background-color: darkred;
+  opacity: 0.5;
+  border: none;
+  color: lightblue;
+  font-size: 18px;
+  padding: 15px;
+  width: 80px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 10px;
+}
+.instructions-btn span {
+  object-fit: fill;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+  text-align: left;
+    font-size: 12px;
+    padding-right: 10px;
+}
+/* istr btn END*/
 
 .img_block{
     position: center;
     color: white;
+    object-fit: contain;
 }
 .h1{
     font-size: 50%;
+    color: red;
 }
 .center_things{
+    border-style: dashed;
+    border-radius: 30px;
+    background-color:white;
+    margin-left: 1rem;
+    margin-right: 1rem;
+
     padding: 20px;
+    position: center;
     align-content: center;
     flex-direction: column;
+    display: block;
+}
+.input_block{
+    align-content: center;
+    flex-direction: column;
+    color:red;
+    width: 100%;
     display: flex;
-    width: 15rem;
+    padding-bottom: 1rem;
+    align-items: center;
+}
+
+.form_block{
+    margin-top: auto;
+    margin-bottom: 10px;
+    color:black;
+    border-top: solid;
+    border-top: wheat;
+
+}
+#textbox{
+    width: 80%;
+    border-radius: 10px;
+    position: center;
+    margin-left: 40px;
+    border-color: dimgrey;
+    border-style: double;
+}
+.description_paragraph{
+    font-style: italic;
+    font-size: 80%
 }
 .img_container{
-    padding: 10px;
+    padding: 20px;
+    background-color:white;
+    display:flex;
+    flex-direction: row;
     align-content: center;
+    border-radius: 25px;
 }
-.input_form{
-    align-items: baseline;
-    align-content: center;
-    flex-direction: column;
+.img_container_compare{
+    margin-left: 5%;
+    position: center;
+    width: 90%;
+    height: 300px;
+    padding: 5px;
+    background-color:white;
     display: flex;
+    flex-direction: row;
+    align-content: center;
+    border-radius: 25px;
+    object-fit: cover;
+
 }
+#comparison img{
+    border-right: black;
+    border-right-width: 1px;
+    padding: 5px;
+
+    height: auto;
+}
+#image{
+    display: none;
+}
+img{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
 .logo_block{
     background: wheat;
     flex-direction: column;
@@ -40,4 +243,83 @@ body{
 
 .retry{
     font-size: 14px;
+}
+hr.dashed {
+  border-top: 3px dashed #bbb;
+}
+
+/* popup box with description START*/
+.overlay {
+  height: 0%;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+.overlay-content {
+  position: relative;
+  top: 25%;
+  width: 100%;
+  text-align: center;
+  margin-top: 30px;
+}
+.overlay h2{
+    padding: 8px;
+  text-decoration: #f1f1f1;
+  font-size: 40px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+.overlay p {
+  padding: 5px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+  color: #f1f1f1;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay a {font-size: 20px}
+  .overlay .closebtn {
+  font-size: 40px;
+  top: 15px;
+  right: 35px;
+  }
+}
+/* popup box with description END*/
+/*zoom img START*/
+ #AI_image #zoomedImage {
+      max-width: 100%;
+      max-height: 100%;
+      transition: transform 0.3s ease;
+    }
+
+    #zoomedImage.zoomed {
+      transform: scale(2);
+      cursor: zoom-out;
+    }
+/*zoom img END*/
+
+.footer{
+    align-content: center;
+    align-items: center;
 }

@@ -6,38 +6,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, intial-scale=1.0">
     <title>Home</title>
 </head>
-<body>
+<body >
     {% block body %}
-    <div>
-        <h1>Home Page</h1>
-        <p>Hello,{{ name }}!</p>
-    </div>
-        <div class="center_things">
-            <div class="input_form">
-                <h1 class="input_text">
-                    <form>
-                        <label for="fname">text input</label><br>
-                        <input type="text" id="write" name="something"><br>
-                    </form>
-                </h1>
-                <h1 class="input_img">
-                    <form>
-                        <label for="fname">image input</label><br>
-                        <input type="text" id="write" name="something"><br>
-                    </form>
-                </h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<ul>
+                    {% for message in messages %}
+ 	<li>{ { message[1] }}</li>
+{% endfor %}</ul>
+{% endif %}
+{% endwith %}
+        <div id="myNav" class="overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="overlay-content">
+                <h2>Welcome to the Game!!</h2>
+                <p>this is an example of the pop up window containing the description on how the game works</p>
+                <p>this is another paragraph describing what you can do after having played</p>
+                <p>click on the X when you are done reading to close this window</p>
             </div>
-
-        <button type="button" onClick="window.location.href='{{ url_for('views.profile')}}';">submit!</button>
         </div>
+        <div class="page-top">
+        <div class="title-box">
+            <h1 class="title-text"> Title of the game </h1>
+        </div>
+            <div class="instruction-box">
+                <button class="instructions-btn" id="is-btn" style="font-size:30px;cursor:pointer" onclick="openNav()">
+                <span>Click for instructions</span>
+                </button>
+            </div>
+        </div>
+        <div class="center_things" style="border:black dashed">
+            <div class="input_block" onload="withoutFormat({{ author }})">
+                <p id="selected_author" onload="withoutFormat({{ author }})">Selected author: {{ author }}</p>
+            </div>
+                <div class="form_block mb-1"  style="border-top: solid">
+                    <label for="textbox">description</label>
+                    <textarea id="textbox" rows="6" name="image" placeholder="describe" required></textarea>
+                    <button class="btn btn-success" onclick="checksubmit()">Leave message</button>
+                    <h3>Image description:</h3>
+                        <h5 class="description_paragraph">this will be sent to the AI</h5>
+                </div>
+
+            <br>
+            <div class="form_block"  style="border-top: solid">
+                <p style="color:black">generated image</p>
+                <div class="img_container" style="border: 2px solid black;">
+                    <div class="img_block">
+                        <img id="AI_image"  src="" onclick="zoomImage()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%if AI_image != ''  %}
+        <div class="footer">
+            <div class="finish_btn">
+                <button class="btn btn-primary" onClick="window.location.href='{{ url_for('views.final',) }}';">finish</button>
+            </div>
+        </div>
+        {%endif %}
+
     {% endblock %}
 </body>
+{% block script %}
 <script type="module"
-            src= "{{ url_for('static',filename='index.js')}}">
+            src= "{{ url_for('static',filename='js/index.js')}}">
     </script>
+{% endblock %}
 </html>

@@ -1,0 +1,26 @@
+{% extends "base.html"%}
+<body>
+{% block body %}
+        <div class="welcome_block">
+            <h1>Welcome to The Memory game</h1>
+        </div>
+
+        <div class="description_block start_borders">
+            <p>the objective of the game is to try and reconstruct
+                one of the pictures you have seen during your visit using only your memory</p>
+            <p>before starting, please select the artwork you want to try and recreate</p>
+            <p>brief description on the game</p>
+            <p>brief description on the game</p>
+        </div>
+    <br>
+    <div class="selector-block start_borders">
+        <form method="POST" class="selector-form" id="painting-select">
+            {{ selector.hidden_tag() }}
+            {{ selector.author.label }}
+            {{ selector.author( class="select-ddb" ) }}
+            {{ selector.submit(class="startButton", id="is-btn", style="font-size:30px; position: center") }}
+        </form>
+    </div>
+
+{% endblock %}
+</body>
