@@ -1,6 +1,9 @@
 # bozzatesi
 
-al lancio l'applicazione manda ad una pagina hello world
-per accedere all'effettiva applicazione bisogna aggiungere .../views all'URL.
+Base.html contains data common to all pages
 
-i text form nell'app non hanno effetto sono posizionati come placeholder
+start.html is the starting page, here you can select the painting you want to reproduce(the various paintings are missing)
+
+index.html is the main game here you can create an AI generated image
+
+Final.html will let you see comparison between original & ai generated image
