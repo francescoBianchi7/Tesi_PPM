@@ -19,7 +19,6 @@ body{
     background-color: floralwhite;
 
 }
-
 .description_block{
     width: 90%;
     font-size: large;
@@ -29,7 +28,6 @@ body{
     margin-left: 5%;
     padding: 20px;
 }
-
 .selector-block{
     width: 90%;
     margin-left: 5%;
@@ -47,18 +45,15 @@ body{
     align-items: center;
     text-align: center;
 }
-
 .select-ddb{
     align-self: start;
 }
-
 .startBlock{
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
 .startButton {
   position: inherit;
   border: 3.8px solid #000000;
@@ -71,7 +66,76 @@ body{
   opacity:1;
   transition:2.7s;
 }
+.container{
+    position: relative;
+    min-height: 100vh;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background-color: black;
+}
+.container .search_box{
+    position: relative;
+    height: 42px;
+    max-width: 400px;
+    margin: 0 auto;
+    margin-bottom: 40px;
+}
+
+.search_box input{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    background-color: #323334;
+    color: #ffffff;
+    padding: 0 15px 0 45px;
+    border-radius: 6px;
+}
+.search_box i{
+    z-index: 2;
+    position: absolute;
+    color: #999;
+    top:50%;
+    left: 15px;
+    font-size: 20px;
+    transform: translateY(-50%);
+    border-radius: 6px;
+}
+.container .images .image-box{
+    position: relative;
+    height: 300px;
+    width: 210px;
+
+}
+.images{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.images .image-box{
+    margin: 8px
+}
+.image .image-box img{
+    height: 100%;
+    width: 100%;
+    border-radius: 6px;
+}
+.image-box h6{
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: capitalize;
+}
 /* end START.HTML*/
+
 .welcome_block{
     width: 100%;
     text-align: center;
@@ -145,6 +209,12 @@ body{
     padding-right: 10px;
 }
 /* istr btn END*/
+.header_container {
+    position: center;
+    justify-content: center;
+  align-items: center;
+    padding-left: 10px;
+}
 
 .img_block{
     position: center;
@@ -171,10 +241,10 @@ body{
 .input_block{
     align-content: center;
     flex-direction: column;
-    color:red;
+    color: black;
     width: 100%;
     display: flex;
-    padding-bottom: 1rem;
+    padding-bottom: 5px;
     align-items: center;
 }
 
@@ -197,6 +267,16 @@ body{
 .description_paragraph{
     font-style: italic;
     font-size: 80%
+}
+.submitButton{
+  display: block;
+  background-color: #212F3C;
+  padding: 18px 10px;
+  color: white;
+  width: 100%;
+  border-radius: 6px;
+  font-size: 20px;
+  font-family: 'Helvetica', Arial, sans-serif;
 }
 .img_container{
     padding: 20px;
@@ -231,8 +311,9 @@ body{
     display: none;
 }
 img{
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: max-content;
+    object-fit: contain;
 }
 
 

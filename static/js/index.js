@@ -72,6 +72,9 @@ window.getPicture=function() {
         console.log(AI_image)
         document.getElementById('AI_image')
             .style.display = "block";
+    }).then(function (){
+      if(document.getElementById("AI_image").src!=='')
+          document.getElementById('endBtn').disabled=false
     })
 }
 

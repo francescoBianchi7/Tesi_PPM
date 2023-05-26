@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+<html lang="en">
+
+{% block head %}
+    <title>Title</title>
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Home</title>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'></link>
+</head>
+{% endblock %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+{% block body %}
+<body>
+    <div class="selector-block start_borders">
+        <form method="POST" class="selector-form" id="painting-select">
+            {{ test.author.label }}
+            {{ test.author( class="select-ddb",id="authors_list") }}
+            {{ test.p}}
+            <h6 class="painting_list">""</h6>
+            {{ test.submit(class="startButton", id="is-btn", style="font-size:30px; position: center") }}
+        </form>
+    </div>
+<div class="title-container">
+    <div class="row">
+        <div class="col">
+            <h1> guestBook</h1>
+            <hr>
+            <div class="mb-3">
+               <form method="POST" class="selector-form" id="painting-select">
+
+        </form>
+<div class="container">
+    <div class="search_box">
+        <i class="bx bx-search"></i>
+        <input type="text" placeholder="search a movie">
+    </div>
+    <div class="images">
+        <div class="image-box" data-name="dwarf">
+            <img src="./static/images/dwarf.jpg" alt="">
+            <h6>dwarf</h6>
+        </div>
+        <div class="image-box" data-name="Last Judgement">
+            <img src="./static/test_images/Michelangelo/Michelangelo, Last_Judgement.jpg" class="img-responsive" alt="">
+            <h6>Last Judgement</h6>
+        </div>
+        <div class="image-box" data-name="Conversion">
+            <img src="./static/test_images/Michelangelo/Michelangelo, Conversion_of_Saint_Paul.jpg" alt="">
+            <h6>Conversion</h6>
+        </div>
+        <div class="image-box" data-name="Creation of sun and Moon">
+            <img src="./static/test_images/Michelangelo/Michelangelo, Creation_of_the_Sun,Moon and Plants.jpg" alt="">
+            <h6>Creation of sun and Moon</h6>
+        </div>
+        <div class="image-box" data-name="Martyrdom">
+            <img src="./static/test_images/Michelangelo/Michelangelo, Martyrdom.jpg" alt="">
+            <h6>Martyrdom</h6>
+        </div>
+        <div class="image-box" data-name="Tondodoni">
+            <img src="./static/test_images/Michelangelo/Michelangelo,Tondo_Doni_2015.png" alt="">
+            <h6>Tondo doni</h6>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+<button class="btn btn-primary" id=testbtn  onclick="getPicture()" disabled>show Picture</button>
+<br>
+<image id="test-img" src=''></image>
+</div>
+
+
+{% endblock %}
+
+</body>
+{% block script %}
+<script type="module" src="{{ url_for('static',filename='js/test.js')}}"></script>
+{% endblock %}
+
+</html>
