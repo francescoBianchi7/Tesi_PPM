@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block head %}
+    <meta charset="UTF-8">
+    <title>Title</title>
+{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+{% block body %}
+    <div class="page-top">
+        <div class="title-box" id="final-page-title">
+            <h1 class="title-text">Test your Memory </h1>
+        </div>
+    </div>
+    <div class="painting_container">
+
+        <div class="container">
+           <div class="top_container_block .container-fluid"
+                style="border-bottom: 2px solid black; margin: 0">
+                <div class="text-box" style="padding-top: 10%">
+                <h3 style="font-style:oblique;font-weight: bold; align-content: center">your image</h3>
+                </div>
+                <div class="image-box-f flex-wrap" style="width: 50%; align-content: center">
+                    <img src="{{ path }}">
+                </div>
+               </div>
+            <div class="images">
+                <div style="width: 100%;">
+                    <h3 class="text-center left-50">vote the ones you like</h3>
+                </div>
+                <div class="image-box">
+                     <img src="./static/test_images/Michelangelo/Michelangelo, Martyrdom.jpg">
+                    <div class="vote-box">
+                        <h5>votes:</h5>
+                        <h3 class="times-voted">1110</h3>
+                        <input type="button" class="my-check">
+                    </div>
+
+                </div>
+                <div class="image-box">
+                     <img src="./static/test_images/Michelangelo/Michelangelo, Martyrdom.jpg">
+                    <div class="vote-box">
+                        <h5>votes:</h5>
+                        <h3 class="times-voted">9</h3>
+                        <input type="button" class="my-check">
+                    </div>
+           </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+</body>
+{% block script %}
+<script type="module"
+            src= "{{ url_for('static', filename='js/vote.js')}}">
+    </script>
+{% endblock %}
+</html>

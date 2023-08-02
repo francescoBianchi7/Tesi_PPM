@@ -7,30 +7,44 @@
 
 <body>
 <div class="page-top">
-        <div class="title-box">
-            <h1 class="title-text"> Title of the game </h1>
+        <div class="title-box" id="final-page-title">
+            <h1 class="title-text">Test Your Memory</h1>
         </div>
 </div>
- <p style="color: red">final page</p>
-<div class="img_container_compare" id="comparison">
-    <div class="row mh-100">
-        <div class="col mw-100 h-100 d-flex align-items-center justify-content-center"
-             style="border-right: black dashed 2px">
-            <img src="{{painting}}"  class="img-fluid img-center" style="object-fit: cover" id="zoomedImage" >
-        </div>
-        <div class="col mw-100 h-100 d-flex align-items-center  justify-content-center"
-            style="border-left: black dashed 2px">
-            <img src="{{original}}"  class="img-fluid img-center" style="object-fit: cover" id="zoomedImage1">
+<div class="painting_container">
+    <div class="container" id="comparison">
+        <div class="images" id="compare-box">
+            <div class="box-final flex-d">
+            <h6>AI IMAGE</h6>
+                <div class=" image-box-f " id="final_AI">
+                    <img src="{{AI_image}}"  class="img-center" style="object-fit: cover" id="zoomedImage" >
+                </div>
+            </div>
+            <div class="box-final flex-d ">
+                <h6>{{ original_name }}</h6>
+                <div class=" image-box-f" id="final_original">
+                    <img src="{{original_path}}"  class="img-center" style="object-fit: cover" id="zoomedImage1">
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
-<div class="footer col mt-5 align-content-center">
-    <h1 class="text-center"> Go back to select another painting to reproduce</h1>
-    <div class="startBlock" >
-        <button class="EndButton" id="is-btn" style="font-size:30px;position: center" onclick="window.location.href='{{ url_for('start') }}'">
-            <span>CLick me</span>
-        </button>
+<div class="footer cols-2 mt-5 align-content-center flex-row">
+    <div class="col">
+        <h1 class="text-center" style="color: wheat"> Go back to select another painting to reproduce</h1>
+        <div class="startBlock" >
+            <button class="EndButton" id="is-btn" style="font-size:30px;position: center" onclick="window.location.href='{{ url_for('start') }}'">
+                <span>CLick me</span>
+            </button>
+        </div>
+    </div>
+    <div class="col align-content-center">
+         <h1 class="text-center" style="color: wheat"> Go to vote page, and confront your creation with others</h1>
+        <div class="startBlock">
+            <button class="startButton"
+                        id='voteBtn'  style="font-size:30px;position: center"
+                    onClick="window.location.href='{{ url_for('vote', path=path, paintingName=paintingName)}}';">Vote</button>
+        </div>
     </div>
 </div>
 </body>

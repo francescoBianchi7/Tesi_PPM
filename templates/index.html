@@ -14,14 +14,7 @@
 </head>
 <body >
     {% block body %}
-        {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<ul>
-                    {% for message in messages %}
- 	<li>{ { message[1] }}</li>
-{% endfor %}</ul>
-{% endif %}
-{% endwith %}
+
         <div id="myNav" class="overlay">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <div class="overlay-content">
@@ -31,54 +24,61 @@
                 <p>click on the X when you are done reading to close this window</p>
             </div>
         </div>
-        <div class="page-top">
-        <div class="title-box">
-            <h1 class="title-text"> Title of the game </h1>
+
+        <div class="page-top d-flex align-items-center">
+        <div class="title-box d-inline-block">
+            <h1 class="title-text"> Test your Memory </h1>
         </div>
-            <div class="instruction-box">
+            <div class="instruction-box ml-auto mr-4">
                 <button class="instructions-btn" id="is-btn" style="font-size:30px;cursor:pointer" onclick="openNav()">
                 <span>Click for instructions</span>
                 </button>
             </div>
         </div>
-        <div class="center_things" style="border:black dashed">
-            <div class="input_block">
-                <p id="selected_author" onload="withoutFormat({{ author }})">Selected painting</p>
-                <h1 style="font-style:oblique;font-weight: bold">{{ author }}</h1>
-            </div>
-                <div class="form_block mb-1"  style="border-top: solid">
-                    <h3>Image description:</h3>
-                    <label for="textbox" class="description_paragraph position-relative">this will be sent to the AI</label>
-                    <h5 class="description_paragraph align-content-center"></h5>
-                    <textarea id="textbox" rows="6" name="image" placeholder="describe" required></textarea>
-                    <button class="submitButton" onclick="checksubmit()">Submit</button>
-                </div>
 
-            <div class="form_block"  style="border-top: solid">
-                <div class="header_container">
-                    <h1 class="center" style="color:black">generated image</h1>
-                    <p>generating your image </p>
+        <div class="painting_container">
+            <div class="container m-0" id="index-container">
+                <div class="top_container_block .container-fluid">
+                    <div class="text-box">
+                        <p id="selected_author">Selected painting</p>
+                        <h3 style="font-style:oblique;font-weight: bold">{{ paintingName }}</h3>
+                    </div>
+                    <div class="miniature-box">
+                        <img class="miniature " src="{{ path }}">
+                    </div>
                 </div>
-                <div class="img_container" style="border: 2px solid black;">
-                    <div class="img_block">
-                        <img id="AI_image"  src="" onclick="zoomImage()">
+                    <div class="form_block mb-1 "  style="border-top: solid">
+                        <h3>Insert the image description that will be sent to AI:</h3>
+                        <label for="textbox" class="description_paragraph "></label>
+                        <textarea id="textbox" rows="6" name="image" placeholder="describe" required></textarea>
+                        <button class="submitButton" onclick="checksubmit()">Submit</button>
+                    </div>
+
+                <div class="form_block"  style="border-top: solid">
+                    <div class="header_container">
+                        <h1 class="center" style="color:black">generated image</h1>
+                        <p>generating your image </p>
+                    </div>
+                    <div class="img_container" style="border: 2px solid black;">
+                        <div class="img_block" id="img_block">
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        {%if AI_image != ''  %}
         <div class="footer">
-            <div class="finish_btn">
-                <button class="btn btn-primary" id='endBtn' onClick="window.location.href='{{ url_for('final') }}';" disabled>finish</button>
+            <p>this will activate after the image is generated</p>
+            <div class="finish_btn_container">
+                <button class="startButton"
+                        id='endBtn' onClick="window.location.href='{{ url_for('final')}}';" disabled>Finish</button>
             </div>
         </div>
-        {%endif %}
-
     {% endblock %}
 </body>
 {% block script %}
 <script type="module"
-            src= "{{ url_for('static',filename='js/index.js')}}">
+            src= "{{ url_for('static', filename='js/index.js')}}">
     </script>
 {% endblock %}
 </html>

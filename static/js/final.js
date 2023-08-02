@@ -1,7 +1,6 @@
 console.log("final load")
 
 
-
 window.setimage=function (){
     let temp=document.getElementById("zoomedImage")
     console.log(AI_image)

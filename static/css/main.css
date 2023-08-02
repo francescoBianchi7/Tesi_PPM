@@ -10,44 +10,38 @@ body{
     background-repeat: repeat;
     background-size: cover;
     }
+.h1{
+    font-size: 50%;
+    color: red;
+}
+#image{
+    display: none;
+}
+img{
+    width: 100%;
+    height: max-content;
+    object-fit: contain;
+}
 /*START.HTML*/
 .start_borders{
      border-style: ridge;
     border-width: 10px;
     border-color: black;
     border-radius: 20%;
-    background-color: floralwhite;
+    background-color: wheat;
 
 }
 .description_block{
     width: 90%;
     font-size: large;
+    font-family: 'Rancho', cursive;
     font-style: italic;
     text-align: center;
     position: center;
     margin-left: 5%;
     padding: 20px;
 }
-.selector-block{
-    width: 90%;
-    margin-left: 5%;
-    padding-top: 10px;
-    padding-bottom: 1rem;
-    padding-left: 5px;
-    align-items: center;
-    align-content: center;
-    position: center;
-}
-.selector-form{
-    font-style: oblique;
-    font-weight: revert;
-    font-size: larger;
-    align-items: center;
-    text-align: center;
-}
-.select-ddb{
-    align-self: start;
-}
+
 .startBlock{
     width: 100%;
     display: flex;
@@ -66,14 +60,21 @@ body{
   opacity:1;
   transition:2.7s;
 }
+.painting_container{
+    width: 90%;
+    margin-left: 5%;
+
+}
 .container{
     position: relative;
-    min-height: 100vh;
-    max-width: 1000px;
-    width: 100%;
-    margin: 0 auto;
+    width: 90%;
+    margin: 5%;
     padding: 40px 20px;
-    background-color: black;
+    background-color: wheat;
+    border-radius: 20px;
+    border-style: ridge;
+    border-width: 10px;
+    border-color: darkslategrey;
 }
 .container .search_box{
     position: relative;
@@ -82,7 +83,6 @@ body{
     margin: 0 auto;
     margin-bottom: 40px;
 }
-
 .search_box input{
     position: absolute;
     height: 100%;
@@ -106,62 +106,58 @@ body{
 }
 .container .images .image-box{
     position: relative;
-    height: 300px;
     width: 210px;
 
 }
 .images{
     width: 100%;
-    height: auto;
+    height: 800px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: scroll;
+}
+.images_f{
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
+.image-box{
+    border: dotted black 3px;
+    border-radius: 5%;
+    text-wrap: normal;
+    overflow: hidden;
+}
 .images .image-box{
-    margin: 8px
+    margin: 5px;
 }
 .image .image-box img{
     height: 100%;
     width: 100%;
     border-radius: 6px;
+    margin: 10px;
+    filter: blur(15px);
 }
 .image-box h6{
     position: absolute;
     bottom: 10px;
     left: 10px;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 400;
-    text-transform: capitalize;
-}
-/* end START.HTML*/
-
-.welcome_block{
-    width: 100%;
-    text-align: center;
-    align-items: center;
+    color: blue;
     font-size: 15px;
-    text-decoration-color: darkred;
-    color: darkred;
-}
-.ddb_container{
-    border-style: wave;
-    border-radius: 20px;
-    border: black;
-    background-color:white;
-    margin-left: 1rem;
-    margin-right: 1rem;
+    font-weight: 500;
+    font-style: oblique;
+    text-transform: capitalize;
+    text-align: left;
 
-    padding: 20px;
-    position: center;
-    align-content: center;
-    flex-direction: column;
-    display: block;
 }
+            /* end START.HTML*/
+
+            /* INDEX.HTML*/
+/***/
 .page-top{
     text-align: center;
-    display: flex;
-    padding-bottom: 30px;
+
 }
 .title-box{
     position: relative;
@@ -170,12 +166,14 @@ body{
     background-clip: text;
     -webkit-background-clip: text;
     color: wheat;
-
-  }
+    width: 80%;
+    padding-left: 5%;
+}
 .instruction-box{
-    position: relative;
-    align-items: flex-end;
-    padding-bottom: 2rem;
+    padding-right: 5px ;
+    padding-left: 20px;
+    align-self: end;
+    width: 20%;
 }
 .instruction-box h1{
     font-style: oblique;
@@ -186,6 +184,7 @@ body{
 /*istr btn START*/
 .instructions-btn{
   display: inline-block;
+
   border-radius: 4px;
   background-color: darkred;
   opacity: 0.5;
@@ -208,44 +207,118 @@ body{
     font-size: 12px;
     padding-right: 10px;
 }
+        /* popup box with description*/
+    .overlay {
+      height: 0%;
+      width: 100%;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: rgb(0,0,0);
+      background-color: rgba(0,0,0, 0.9);
+      overflow-x: hidden;
+      transition: 0.5s;
+    }
+    .overlay-content {
+      position: relative;
+      top: 25%;
+      width: 100%;
+      text-align: center;
+      margin-top: 30px;
+    }
+    .overlay h2{
+        padding: 8px;
+      text-decoration: #f1f1f1;
+      font-size: 40px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    }
+    .overlay p {
+      padding: 5px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    }
+    .overlay a:hover, .overlay a:focus {
+      color: #f1f1f1;
+    }
+    .overlay .closebtn {
+      position: absolute;
+      top: 20px;
+      right: 45px;
+      font-size: 60px;
+    }
+    @media screen and (max-height: 450px) {
+      .overlay a {font-size: 20px}
+      .overlay .closebtn {
+      font-size: 40px;
+      top: 15px;
+      right: 35px;
+      }
+    }
+        /* popup box with description*/
 /* istr btn END*/
+
 .header_container {
     position: center;
     justify-content: center;
-  align-items: center;
+    align-items: center;
     padding-left: 10px;
 }
-
 .img_block{
     position: center;
     color: white;
     object-fit: contain;
-}
-.h1{
-    font-size: 50%;
-    color: red;
+    padding:10px
 }
 .center_things{
-    border-style: dashed;
-    border-radius: 30px;
-    background-color:white;
+    border-style: ridge;
+    border-radius: 10%;
+    border-width: 10px;
+    border-color: darkslategrey;
+    background-color:floralwhite;
     margin-left: 1rem;
     margin-right: 1rem;
-
     padding: 20px;
     position: center;
     align-content: center;
     flex-direction: column;
     display: block;
 }
-.input_block{
-    align-content: center;
-    flex-direction: column;
+
+.top_container_block{
+    flex-direction: row;
     color: black;
     width: 100%;
     display: flex;
     padding-bottom: 5px;
-    align-items: center;
+    margin-top: 0;
+}
+
+.text-box {
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+    box-sizing: content-box;
+    width: 60%;
+}
+.miniature-box{
+    width:40%;
+    flex-wrap: wrap;
+    display: flex;
+    padding-bottom: 10px;
+    margin-top: 0;
+    align-content: end;
+    object-position: left;
+}
+.miniature{
+    width: 150px;
+    height: 150px;
+    filter: blur(5px);
 }
 
 .form_block{
@@ -254,13 +327,12 @@ body{
     color:black;
     border-top: solid;
     border-top: wheat;
-
+    text-align: center;
 }
 #textbox{
-    width: 80%;
+    width: 90%;
     border-radius: 10px;
     position: center;
-    margin-left: 40px;
     border-color: dimgrey;
     border-style: double;
 }
@@ -281,45 +353,61 @@ body{
 .img_container{
     padding: 20px;
     background-color:white;
-    display:flex;
-    flex-direction: row;
     align-content: center;
     border-radius: 25px;
 }
-.img_container_compare{
-    margin-left: 5%;
-    position: center;
-    width: 90%;
-    height: 300px;
-    padding: 5px;
-    background-color:white;
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    border-radius: 25px;
-    object-fit: cover;
+            /* end INDEX.HTML*/
 
-}
-#comparison img{
-    border-right: black;
-    border-right-width: 1px;
-    padding: 5px;
-
-    height: auto;
-}
-#image{
-    display: none;
-}
-img{
+            /* FINAL.HTML*/
+/***/
+#compare-box{
     width: 100%;
-    height: max-content;
+    height: 80%;
+    position: relative;
+    overflow: auto;
+}
+#final-page-title{
+    flex-wrap: wrap;
+    align-self: center;
+    width: 100%;
+    padding-right: 5%;
+}
+.image-box-f{
+    border: dotted black 3px;
+    border-radius: 5%;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    padding: 10px;
+    align-content: end;
+    text-align: start;
+    width: 90%;
+    height: auto;
+
+}
+.image-box-f>img{
+    align-self: end;
+    display: flex;
     object-fit: contain;
 }
+.box-final h6{
+    align-self: start;
+    position: center;
+    width: 18%;
+    flex-wrap: wrap;
+    padding-top: 40%;
+}
 
-
-.logo_block{
-    background: wheat;
-    flex-direction: column;
+.box-final{
+    display: flex;
+    align-content: center;
+    position: center;
+    text-align: left;
+    width: 100%;
+    height: 30%;
+    box-sizing: border-box;
+}
+#voteBtn{
+    align-self: center;
 }
 
 .retry{
@@ -329,64 +417,7 @@ hr.dashed {
   border-top: 3px dashed #bbb;
 }
 
-/* popup box with description START*/
-.overlay {
-  height: 0%;
-  width: 100%;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0, 0.9);
-  overflow-x: hidden;
-  transition: 0.5s;
-}
 
-.overlay-content {
-  position: relative;
-  top: 25%;
-  width: 100%;
-  text-align: center;
-  margin-top: 30px;
-}
-.overlay h2{
-    padding: 8px;
-  text-decoration: #f1f1f1;
-  font-size: 40px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-.overlay p {
-  padding: 5px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-.overlay a:hover, .overlay a:focus {
-  color: #f1f1f1;
-}
-
-.overlay .closebtn {
-  position: absolute;
-  top: 20px;
-  right: 45px;
-  font-size: 60px;
-}
-
-@media screen and (max-height: 450px) {
-  .overlay a {font-size: 20px}
-  .overlay .closebtn {
-  font-size: 40px;
-  top: 15px;
-  right: 35px;
-  }
-}
-/* popup box with description END*/
 /*zoom img START*/
  #AI_image #zoomedImage {
       max-width: 100%;
@@ -401,6 +432,64 @@ hr.dashed {
 /*zoom img END*/
 
 .footer{
+    display: flex;
+    flex-direction: column;
     align-content: center;
     align-items: center;
+    margin-bottom: 10px;
+}
+.footer p{
+    font-style: italic;
+    color: lightcyan;
+    font-weight: normal;
+}
+.finish_btn_container{
+    position: relative;
+    width: 30%;
+    margin: 0;
+    align-content: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+.finish_btn{
+    width: 100%;
+    alignment: center;
+    font-weight: normal;
+    border-radius: 5px;
+    border-width: 5px;
+}
+.finish_btn:disabled{
+    opacity: 40%;
+}
+#original{}
+.vote_page_block{
+    width: 90%;
+    font-size: large;
+    font-family: 'Rancho', cursive;
+    font-style: italic;
+    text-align: center;
+    position: center;
+    margin-left: 5%;
+    padding: 20px;
+}
+
+.vote-box{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 3px solid tan;
+    border-radius: 5%;
+    background-color: white;
+    padding-left:0;
+    padding-right: 0;
+}
+
+.vote-box> .my-check{
+    flex: max-content;
+    flex-wrap: wrap;
+    box-sizing: content-box;
+    align-content: flex-end;
+    display: flex;
+    padding-left: 5px ;
+    border-radius: 1px;
 }

@@ -1,26 +1,49 @@
 {% extends "base.html"%}
 <body>
+{% block head %}
+    <title>Title</title>
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Home</title>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'></link>
+</head>
+{% endblock %}
 {% block body %}
-        <div class="welcome_block">
-            <h1>Welcome to The Memory game</h1>
+   <div class="page-top">
+        <div class="title-box">
+            <h1 class="title-text"> Test Your Memory </h1>
         </div>
-
+   </div>
         <div class="description_block start_borders">
-            <p>the objective of the game is to try and reconstruct
-                one of the pictures you have seen during your visit using only your memory</p>
-            <p>before starting, please select the artwork you want to try and recreate</p>
-            <p>brief description on the game</p>
-            <p>brief description on the game</p>
+            <h2>WELCOME</h2>
+            <h3>Test your memory</h3>
+            <h3>Try to recreate a painting by describing it to an AI and see what it creates
+            </h3>
+            <br>
+            <h5 style="font-weight: bold">NOTE:*the AI will not generate a perfect copy of the original *</h5>
         </div>
-    <br>
-    <div class="selector-block start_borders">
-        <form method="POST" class="selector-form" id="painting-select">
-            {{ selector.hidden_tag() }}
-            {{ selector.author.label }}
-            {{ selector.author( class="select-ddb" ) }}
-            {{ selector.submit(class="startButton", id="is-btn", style="font-size:30px; position: center") }}
-        </form>
-    </div>
+   <div class="painting_container">
+        <div class="container">
+            <h4>Please select the painting you want to test your memory on</h4>
+            <div class="aut_select">
+                <div class="search_box">
+                    <i class="bx bx-search"></i>
+                    <input type="text" placeholder="search the painting">
+                </div>
+                <h5 id="temp_select">selected: {{ selectedPainting }}</h5>
+                <button class="startButton" id="is-btn" style="font-size:30px; position: center"
+                         onclick="window.location.href='{{ url_for('home') }}'" disabled>Start</button>
+                <div class="images">
 
+                </div>
+            </div>
+        </div>
+   </div>
+{% endblock %}
+{% block script %}
+<script type="module"
+        src="{{ url_for('static',filename='js/start.js')}}"></script>
 {% endblock %}
 </body>

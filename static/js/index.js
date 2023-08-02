@@ -5,18 +5,6 @@ function myFunction() {
 
 console.log("i'm loaded");
 
-/*
-
-const response = await fetch(`${config.BASE_URL}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-
-*/
 let AI_image;
 
 window.checksubmit=function () {
@@ -46,36 +34,30 @@ window.checksubmit=function () {
                 return;
             }
             response.json().then(function (data) {
-                console.log(data)
-                window.getPicture();
+                console.log("picture is", data)
+                window.showOnscreen(data);
             })
         })
     }
 }
 
+window.showOnscreen=function(data){
+    if(!document.getElementById('AI_image')) {
+        let image = document.createElement("img")
+        image.id = 'AI_image';
+        document.getElementById("img_block").appendChild(image);
+    }
+    document.getElementById('AI_image').src = data;
 
-
-window.getPicture=function() {
-    fetch(`${Config.BASE_URL}/pictures`,{
-        method: "GET",
-        credentials: "include", //cookies on the page
-        cache: "no-cache",
-        headers: new Headers({
-            "content-type": "application/json"
-        })
-    }).then(response=>response.json())
-        .then(json=>{
-            console.log("receive:", json)
-        let image = document.getElementById("AI_image");
-        image.src = json;
-        AI_image=json;
-        console.log(AI_image)
-        document.getElementById('AI_image')
-            .style.display = "block";
-    }).then(function (){
-      if(document.getElementById("AI_image").src!=='')
-          document.getElementById('endBtn').disabled=false
-    })
+    AI_image=data;
+    console.log(AI_image)
+    document.getElementById('AI_image')
+        .style.display = "block";
+    document.getElementById('AI_image')
+        .style.position= "center";
+    if(document.getElementById("AI_image").src!=='') {
+          document.getElementById('endBtn').disabled = false
+    }
 }
 
 
@@ -85,27 +67,6 @@ window.openNav=function() {
 window.closeNav=function() {
   document.getElementById("myNav").style.height = "0%";
 }
-
-window.withoutFormat=function (pictureLabel){
-     var author = document.getElementById("selected_author");
-     author.substring("", pictureLabel.lastIndexOf("."));
-}
-
-
-
-window.checkform=function () {
-        var f = document.forms["description_form"].elements;
-        var cansubmit = true;
-
-        for (var i = 0; i < f.length; i++) {
-            if (f[i].value.length === 0)
-                cansubmit = false;
-        }
-
-        if (cansubmit) {
-            document.getElementById('submitbutton').disabled = !cansubmit;
-        }
-    }
 
 //IMG ZOOM
 window.zoomImage=function() {
