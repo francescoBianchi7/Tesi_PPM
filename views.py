@@ -11,7 +11,7 @@ from wtforms.validators import DataRequired
 
 from datetime import datetime
 
-#import AI as AI
+import AI as AI
 # setup
 app = Flask(__name__, static_url_path="/static")
 app.config['SECRET_KEY'] = 'your secret key'
@@ -19,13 +19,13 @@ app.config['SECRET_KEY'] = 'your secret key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///images.db'
 # init DB
 db = SQLAlchemy(app)
-
+base="http://127.0.0.1:5000/"
 # #GLOBAL VARIABLES
 FOLDER_LIST = os.listdir('static/images')
 
-TEST_LIST = os.listdir('static/images/Raffaello')
+TEST_LIST = os.listdir('static/images/Leonardo da vinci')
 imgdir = 'static/images/'
-
+created_images_dir='static/created_images/'
 AI_image = ''
 
 
@@ -33,57 +33,6 @@ AI_image = ''
 # CLASSES
 ##
 # db model temp class
-"""
-
-def start_AI(): #chiamato all'avvio
-    os.environ['TFHUB_MODEL_LOAD_FORMAT'] = 'COMPRESSED'
-    AI.mpl.rcParams['figure.figsize'] = (12, 12)  # avvio
-    AI.mpl.rcParams['axes.grid'] = False  # avvio
-    hub_model = AI.hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
-
-def select_weight(author):# author servirà per selezionare il finetuning
-    #una volta che l'utente ha selezionato l'opera, dato che poi avremmo più di un possibile autore
-    weights_path = '/content/drive/MyDrive/finetuned_stable_diffusion.h5'  # dopo che l'utente ha selezionato l'opera
-                                                                            # da cambiare, verrà preso tramite database
-    #will be changed to the right path
-    img_height = img_width = 512
-    paintings_model = AI.keras_cv.models.StableDiffusion(
-        img_width=img_width, img_height=img_height
-    )  # definizione del modello, prende in input la dimensione dell'immagine, sono funzioni di keras, librerie da importare
-    paintings_model.diffusion_model.load_weights(weights_path)  # carica il file .h5
-
-
-def generate_image(user_prompt):
-    AI.prompts=[user_prompt]
-    for prompt in AI.prompts:
-        generated_images = AI.paintings_model.text_to_image(
-            prompt, batch_size=AI.images_to_generate, unconditional_guidance_scale=40
-        )
-        # questo for applica l'algoritmo di text to image, prendendo l'input(prompt), il n di immagini da generare, dimensioni. mette il risultato in outputs
-        AI.outputs.update({prompt: generated_images})
-
-    for prompt in AI.outputs:  # esegue la funzione sopra sull'array outputs
-        AI.plot_images(AI.outputs[prompt])
-
-def style_transfer(original, generated): # original e generated sono path
-    content_path = generated
-    style_path = original
-    content_image = AI.load_img(content_path)
-    style_image = AI.load_img(style_path)
-    #generazione
-    stylized_image = AI.hub_model(AI.tf.constant(content_image), AI.tf.constant(style_image))[0]
-    # utilizza il modello caricato sopra, gli passa le 2 immagini e genera il risultato finale
-    #fine generazione
-    final_image = AI.tensor_to_image(stylized_image)
-    final_image = final_image.save('finale.jpg')  # salva immagine come file, dovrò trovare il modo
-                                                # per salvarle in un path unico, e nel database
-                                                # probabilmente verrà fatto solo una volta che l'utente switcha pagina
-                                                # almeno evito di salvare l'immagine mille volte
-
-def commit_image(final_image):
-    #verrà ulteriormente inserita in una tabella del database.
-    final_image.save('path')
-"""
 def fill():
     db.session.query(Painting_temp).delete()
     db.session.query(Finetuning).delete()
@@ -108,6 +57,9 @@ def fill():
                 elif j.endswith('.png'):
                     x = j.replace('.png', '')
                     x = x.replace('_', ' ')
+                elif j.endswith('.jpeg'):
+                    x = j.replace('.jpeg', '')
+                    x = x.replace('_', ' ')
                 print(x)
                 temp = dir + j
                 painting = Painting_temp.query.filter_by(path=temp).first()
@@ -117,27 +69,56 @@ def fill():
                     db.session.add(painting)
                 id += 1
     db.session.commit()
+"""
+def change():
+    p1 = Painting_temp.query.filter_by(painting='Leonardo da Vinci, Gioconda').first()
+    c=Created_Imgs.query.filter_by(original=p1.path).all()
+    print("gioconda",c)
+    for entry in c:
+        print("sda",entry)
+        goal=created_images_dir+p1.painting+str(entry.id)+".jpg"
+        print("changed to", goal)
+        entry.path=goal
+        print("after change", entry)
+    p2 = Painting_temp.query.filter_by(painting='Leonardo da Vinci, Madonna of the Yarnwinder').first()
+    c2=Created_Imgs.query.filter_by(original=p2.path).first()
+    print("madonna", c2)
+    c2.path = created_images_dir+p2.painting+str(1)+".jpg"
+    c2.original = p2.path
+    print("madonna2", c2)
+    db.session.commit()
+"""
 
+"""avvio"""
+hub_model = AI.hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
+print("AI started", hub_model)
+# caricamente del modello per il style transfer, è già fatto e va scaricato
 def fill_ft():
     db.session.commit()
+
 class Painting_temp(db.Model):
     id = db.Column(db.Integer, nullable=False)
     path = db.Column(db.String(200), primary_key=True)
     aut = db.Column(db.String(100), nullable=False)
     painting = db.Column(db.String(200), nullable=False)
 
-    #finetuning=relationship("Finetuning", backref="authors")
+    #finetuning=db.Relationship("Finetuning", backref="authors")
+    #created=db.relationship("created_imgs", backref='painting')
     def __repr__(self):
         return "Painting_temp('path:%s', 'aut: %s','painting: %s'>" \
             % (self.path, self.aut, self.painting)
 
 
-class Created_imgs(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    path = db.Column(db.String(255), nullable=False)
+class Created_Imgs(db.Model):
+    id = db.Column(db.Integer, nullable=False)
+    path = db.Column(db.String(255), primary_key=True)
+    original = db.Column(db.String(255), nullable=False)
     # base_pic = db.Column(db.String(255),
-    # db.ForeignKey('Painting_temp.path'))
+    #db.ForeignKey('Painting_temp.name'),)
     votes = db.Column(db.Integer)
+    def __repr__(self):
+        return "created models('path:%s','id:%s', 'original: %s'>" \
+            % (self.path, self.id, self.original)
 
 class Finetuning(db.Model):
     path = db.Column(db.String(255), primary_key=True)
@@ -147,33 +128,59 @@ class Finetuning(db.Model):
         return "Finetuned models('path:%s', 'author: %s'>" \
             % (self.path, self.author)
 
+def add_new_created_img(original):
+    db.session.query(Created_Imgs)
+    same_paint = Created_Imgs.query.filter_by(original=original).all()
+    print("sane", same_paint)
+    l=len(same_paint)
+    print("l", l)
+    if same_paint is None:
+        path = created_images_dir+original+str(l+1)
+        print("p", path)
+        ori=Painting_temp.query.filter_by(name=original).first()
+        print("a", ori.path)
+        same_paint = Created_Imgs(id=l+1, path=path, original=ori.path, votes=0)
+        print(same_paint)
+        db.session.add(same_paint)
+    else:
+        path = created_images_dir + original + str(l+1)
+        ori = Painting_temp.query.filter_by(name=original).first()
+        print("a", ori.path)
+        same_paint = Created_Imgs(id=l+1, path=path, original=original, votes=0)
+        print(same_paint)
+        db.session.add(same_paint)
+    print(Created_Imgs.query.filter_by(original=original).all())
+    print("length after",l)
+    print(same_paint)
+    print(type(same_paint))
+    db.session.commit()
+
+
 with app.app_context():
-    db.drop_all()
     db.create_all()
-
-
-# TO BE REMOVED
-
-class Painting():
-    p = {}
-    for i in FOLDER_LIST:
-        strip = i.rsplit('.', 1)[0]
-        p[FOLDER_LIST.index(i)] = strip
-
-    def as_list(self):
-        return list(self.p.values())
-
 
 ##
 # #ROUTES
 ##
+def Ai_start():
+    session["hub_model"] = AI.start_AI()
+    print(session["hub_model"])
 
 @app.route("/", methods=["GET", "POST"])
 def start():
     painting = None
     author = None
-    fill()
-    return render_template('start.html', selectedPainting=painting)
+    #change()
+    p=Painting_temp.query.filter_by(painting='Leonardo da Vinci, Gioconda').first()
+    pc=Created_Imgs.query.all()
+    print("created", pc)
+    print(p)
+    print(p.painting)
+    #add_new_created_img(p.path)
+    #fill()
+    pa=Created_Imgs.query.filter_by(id=2).first()
+    print("agaga", pa.path)
+    return render_template('start.html', selectedPainting=painting,created=pa.path)
 
 
 @app.route("/getPainting", methods=["GET", "POST"])
@@ -193,19 +200,102 @@ def getSelectedPainting():
 
 @app.route("/game", methods=['GET', 'POST'])
 def home():
+    print('path', session.get('path'))
+    paint = Painting_temp.query.filter_by(painting=session.get('name')).first()
+    path= paint.path
+    print('path2', path)
     return render_template("index.html", paintingName=session.get('name'), path=session.get('path'))
 
+@app.route("/getAI", methods=['GET']) #assigns author style to the AI
+def getAI():
+    return
+
+model=None
+@app.route("/generate", methods=['POST', 'GET']) # AI creates pictures
+# based on the style and prompt. and sends it back to front end
+def generate():
+    req = request.get_json() #receives the prompt
+    print("req is", req)
+    prompt = req.get('message')
+    print(prompt)
+    global model
+    if model is None:
+        author = session.get("author", None)
+        t = Finetuning.query.filter_by(author=author).first()
+        model = AI.select_weight(t.path)
+        print("author selected", t.author)
+        print("finetune path", t.path)
+
+    path, output = AI.generate_image(prompt, model)
+    print("the output is", output.items())
+    print("created path is", path)
+
+    original_p = Painting_temp.query.filter_by(path=session.get('path')).first()
+    final = AI.style_transfer(original_p.path, path, hub_model)
+    print("final image", final)
+
+    im = AI.PIL.Image.open("finale.jpg")
+    same_paint = Created_Imgs.query.filter_by(original=original_p.path).all()
+    path = AI.commit_image(final, created_images_dir, original_p.painting, len(same_paint)+1)
+    l=len(same_paint)+1
+    painting_path = created_images_dir+original_p.painting+str(l)+".jpg"
+    session['AI_image'] = painting_path# keeps the image in memory for all the duration of the session
+    print("created path is", path)
+
+    response = jsonify(painting_path)# sends back generated image
+    return response
+
+@app.route("/result", methods=['POST', 'GET'])
+def final():
+    AI_image = session.get('AI_image', None)
+    print('ass', AI_image)
+    original_path = session.get('path', None)
+    original_name = session.get('name', None)
+    add_new_created_img(original_name)
+    res1 = Created_Imgs.query.with_entities(Created_Imgs.path).all()
+    print("ada", res1)
+    print("or", original_path)
+    return render_template("final.html", original_path=original_path,
+                           original_name=original_name, AI_image=AI_image)
 
 @app.route("/vote", methods=['GET', 'POST'])
 def vote():
     description = None
-    return render_template("vote.html", path=session.get('path'), name=session.get('name'))
+    created_AI=session.get('AI_image', None)
+    return render_template("vote.html", path=session.get('path'),
+                           name=session.get('name'), AI_image=created_AI)
+
+@app.route("/get_created", methods=['GET'])
+def get_similar_creation():
+    print("xd", session.get('name',None))
+    orig=Painting_temp.query.filter_by(painting=session.get('name')).first()
+    print("ar",orig)
+    res = Created_Imgs.query.filter_by(original=orig.path).all()
+    d = {}
+    for entry in res:
+        print(entry)
+        d[entry.path] = entry.votes
+    print("end_d", d)
+    response = jsonify(d)
+    return d
 
 
-@app.route("/vote/votes", methods=['GET', 'POST'])
+
+
+@app.route("/votes_update", methods=['GET', 'POST'])
 def increase_votes():
-    return
-
+    entry = request.get_json()
+    print("updated", entry)
+    print("ada", str(entry.get('path')))
+    path=str(entry.get('path'))
+    path=path.removeprefix("http://127.0.0.1:5000/")
+    path=path.replace('%20', ' ')
+    print("proper", path)
+    updated = Created_Imgs.query.filter_by(path=path).first()
+    updated.votes = entry.get('votes')
+    db.session.commit()
+    response = entry.get("votes")
+    return jsonify(response)
 
 
 @app.route("/start_paints", methods=['POST', 'GET'])
@@ -223,15 +313,7 @@ def get_all():
     return response
 
 
-@app.route("/result", methods=['POST', 'GET'])
-def final():
-    AI_image = session.get('AI_image', None)
-    print('ass', AI_image)
-    original_path = session.get('path', None)
-    original_name = session.get('name', None)
-    print("or", original_path)
-    return render_template("final.html", original_path=original_path,
-                           original_name=original_name, AI_image=AI_image)
+
 
 
 @app.route("/test", methods=['POST', 'GET'])
@@ -240,9 +322,6 @@ def test():
     path = None
     name = None
     print(FOLDER_LIST)
-    fill()
-    for paint in db.session.query(Painting_temp).all():
-        print(paint)
 
     if request.method == ' POST':
         author = request.form.get('painting')
@@ -293,23 +372,4 @@ def test_get_all():
     print("aagagaga", res4)
     print("end_d", d)
     response = jsonify(d)
-    return response
-
-
-@app.route("/getAI", methods=['GET']) #assigns author style to the AI
-def getAI():
-    return
-@app.route("/generate", methods=['POST', 'GET']) # AI creates pictures
-# based on the style and prompt. and sends it back to front end
-def generate():
-    req = request.get_json() #receives the prompt
-    print("req is", req)
-    time.sleep(5) #to be removed
-    painting = "https://placehold.co/512?text=AI+IMage&font=roboto"# temporary
-
-    session['AI_image'] = painting#keeps the image in memory
-    # for all the duration of the session
-    print(painting)
-    AI_image = painting
-    response = jsonify(painting)# sends back generated image
     return response
