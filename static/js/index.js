@@ -1,6 +1,6 @@
 import { Config } from "./config.js";
 function myFunction() {
-        window.location.href="http://programminghead.com";  
+        window.location.href="http://programminghead.com";
 }
 
 console.log("i'm loaded");
@@ -59,27 +59,3 @@ window.showOnscreen=function(data){
           document.getElementById('endBtn').disabled = false
     }
 }
-
-
-window.openNav=function() {
-  document.getElementById("myNav").style.height = "100%";
-}
-window.closeNav=function() {
-  document.getElementById("myNav").style.height = "0%";
-}
-
-//IMG ZOOM
-window.zoomImage=function() {
-    if (document.getElementById('zoomedImage')){
-            const image = document.getElementById('zoomedImage');
-            image.classList.toggle('zoomed');
-            image.position.absolute
-
-        }else if(document.getElementById('zoomedImage1')) {
-            const image = document.getElementById('zoomedImage');
-            image.classList.toggle('zoomed');
-        }
-    }
-const obj = { hello: "world" };
-console.log("the image is", AI_image)
-
