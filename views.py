@@ -128,7 +128,8 @@ class Finetuning(db.Model):
         return "Finetuned models('path:%s', 'author: %s'>" \
             % (self.path, self.author)
 
-def add_new_created_img(original):
+def add_new_created_img(original): #called after the user switches page from /game to /result saves the created image in the
+    #Created_Imgs database
     db.session.query(Created_Imgs)
     same_paint = Created_Imgs.query.filter_by(original=original).all()
     print("sane", same_paint)
@@ -171,8 +172,8 @@ def start():
     painting = None
     author = None
     #change()
-    p=Painting_temp.query.filter_by(painting='Leonardo da Vinci, Gioconda').first()
-    pc=Created_Imgs.query.all()
+    p=Painting_temp.query.filter_by(painting='Leonardo da Vinci, Gioconda').first() # to be removed
+    pc=Created_Imgs.query.all() # to be removed
     print("created", pc)
     print(p)
     print(p.painting)
@@ -183,7 +184,7 @@ def start():
     return render_template('start.html', selectedPainting=painting,created=pa.path)
 
 
-@app.route("/getPainting", methods=["GET", "POST"])
+@app.route("/getPainting", methods=["GET", "POST"]) #changes user selection after user click on an image
 def getSelectedPainting():
     selectedpaint = request.get_json()
     print(type(selectedpaint))
@@ -198,7 +199,7 @@ def getSelectedPainting():
     return response
 
 
-@app.route("/game", methods=['GET', 'POST'])
+@app.route("/game", methods=['GET', 'POST']) #index.html
 def home():
     print('path', session.get('path'))
     paint = Painting_temp.query.filter_by(painting=session.get('name')).first()
@@ -212,14 +213,14 @@ def getAI():
 
 model=None
 @app.route("/generate", methods=['POST', 'GET']) # AI creates pictures
-# based on the style and prompt. and sends it back to front end
+# based on the style and prompt. and sends it back to front end  CALLED FROM index.js
 def generate():
     req = request.get_json() #receives the prompt
     print("req is", req)
     prompt = req.get('message')
     print(prompt)
     global model
-    if model is None:
+    if model is None: #creates model if it hasn't been created
         author = session.get("author", None)
         t = Finetuning.query.filter_by(author=author).first()
         model = AI.select_weight(t.path)
@@ -265,7 +266,7 @@ def vote():
     return render_template("vote.html", path=session.get('path'),
                            name=session.get('name'), AI_image=created_AI)
 
-@app.route("/get_created", methods=['GET'])
+@app.route("/get_created", methods=['GET']) #called from vote.js retrieves the image created by the user
 def get_similar_creation():
     print("xd", session.get('name',None))
     orig=Painting_temp.query.filter_by(painting=session.get('name')).first()
@@ -282,7 +283,7 @@ def get_similar_creation():
 
 
 
-@app.route("/votes_update", methods=['GET', 'POST'])
+@app.route("/votes_update", methods=['GET', 'POST']) #vote.js updates votes on an image
 def increase_votes():
     entry = request.get_json()
     print("updated", entry)
@@ -298,7 +299,7 @@ def increase_votes():
     return jsonify(response)
 
 
-@app.route("/start_paints", methods=['POST', 'GET'])
+@app.route("/start_paints", methods=['POST', 'GET']) # called from (start.js)
 def get_all():
     res1 = Painting_temp.query.with_entities(Painting_temp.painting).all()
     print("ada", res1)
@@ -316,7 +317,7 @@ def get_all():
 
 
 
-@app.route("/test", methods=['POST', 'GET'])
+@app.route("/test", methods=['POST', 'GET']) # TO BE REMOVED 
 def test():
     painting = None
     path = None
@@ -333,7 +334,7 @@ def test():
                            name=name, our_painting=our_paintings)
 
 
-@app.route("/test/paint", methods=['POST', 'GET'])
+@app.route("/test/paint", methods=['POST', 'GET']) #TO BE REMOVED
 def paint():
     aut = request.get_json()
     print("aut select", aut)
@@ -346,7 +347,7 @@ def paint():
     return response
 
 
-@app.route("/test/get_paint_db", methods=['POST', 'GET'])
+@app.route("/test/get_paint_db", methods=['POST', 'GET'])  #TO BE REMOVED
 def get_painting():
     ids = request.get_json()
     print(ids)
@@ -359,7 +360,7 @@ def get_painting():
     return response
 
 
-@app.route("/test/search_paint_db", methods=['POST', 'GET'])
+@app.route("/test/search_paint_db", methods=['POST', 'GET']) #TO BE REMOVED
 def test_get_all():
     res1 = Painting_temp.query.with_entities(Painting_temp.painting).all()
     res2 = Painting_temp.query.with_entities(Painting_temp.path).all()
