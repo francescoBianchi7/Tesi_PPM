@@ -1,4 +1,4 @@
-# bozzatesi
+ # bozzatesi
 
 Base.html contains data common to all pages
 
@@ -12,3 +12,5 @@ Vote.html will let see other generetad images of the same painting
 
 
 Views.py: module that manages routes and database
+
+the first time you run the program you will probably need to uncomment the call to the fill() function that happens in @app.route("/") this operation needs to be done only once
