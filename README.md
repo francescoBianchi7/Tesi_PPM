@@ -7,3 +7,8 @@ start.html is the starting page, here you can select the painting you want to re
 index.html is the main game here you can create an AI generated image
 
 Final.html will let you see comparison between original & ai generated image
+
+Vote.html will let see other generetad images of the same painting
+
+
+Views.py: module that manages routes and database
