@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block body %}
+    {% if psw %}
+        {{ form.hidden_tag() }}
+        {{  picForm.pic.label}}
+        {{ picForm.pic}}
+    {% else %}
+    <h1>what's your name</h1>
+    <br/>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{  form.psw.label}}
+        {{ form.psw }}
+        {{ form.submit }}
+    </form>
+    {% endif %}
+{% endblock %}
+</body>
+{% block script %}
+
+{% endblock %}
+</html>

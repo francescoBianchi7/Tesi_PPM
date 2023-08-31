@@ -1,65 +1,10 @@
-{% extends 'base.html' %}
-
-<html lang="en">
-
-{% block head %}
-    <title>Title</title>
-    <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, intial-scale=1.0">
-    <title>Home</title>
-    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'></link>
-</head>
-{% endblock %}
-
 <!DOCTYPE html>
 <html lang="en">
-
-{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
 <body>
-    <div class="selector-block p-4 start_borders">
-
-
-    </div>
-    <table class="table table-dark table-hover table-bordered table-striped">
-    {% for our_user in our_painting %}
-        <tr>
-            <td>{{ our_user.id }}.{{ our_user.aut }}: {{ our_user.painting }}-{{ our_user.path }}</td>
-        </tr>
-    {% endfor %}
-    </table>
-    <img src="" id="test_pic" onclick="getPicture(1)">
-<hr>
-    <div class="painting_container">
-        <div class="container">
-            <div class="aut_select">
-                <div class="search_box">
-                    <i class="bx bx-search"></i>
-                    <input type="text" placeholder="search a movie">
-                </div>
-                    <h5 id="temp_select">selected: {{ selectedPainting }}</h5>
-                <div class="images">
-                   <div class="image-box" data-name="dwarf">
-                        <img src="./static/images/dwarf.jpg" alt="">
-                        <h6>dwarf</h6>
-                   </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<div class="mb-3">
-<button class="btn btn-primary" id=testbtn  onclick="getPicture()" disabled>show Picture</button>
-<br>
-<image id="test-img" src=''></image>
-</div>
-
-
-{% endblock %}
 
 </body>
-{% block script %}
-<script type="module" src="{{ url_for('static',filename='js/test.js')}}"></script>
-{% endblock %}
-
 </html>

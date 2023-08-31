@@ -51,7 +51,7 @@
                         <h3>Insert the image description that will be sent to AI:</h3>
                         <label for="textbox" class="description_paragraph "></label>
                         <textarea id="textbox" rows="6" name="image" placeholder="describe" required></textarea>
-                        <button class="submitButton" onclick="checksubmit()">Submit</button>
+                        <button class="submitButton" id="submit_btn" onclick="checksubmit()">Submit</button>
                     </div>
 
                 <div class="form_block"  style="border-top: solid">
@@ -61,7 +61,9 @@
                     </div>
                     <div class="img_container" style="border: 2px solid black;">
                         <div class="img_block" id="img_block">
-
+                            <h2 id="AI_box_txt" style="display: none ; color: black">The AI is generating your image, please wait</h2>
+                             <div id="loading">
+                             </div>
                         </div>
                     </div>
                 </div>

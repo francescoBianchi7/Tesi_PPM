@@ -10,6 +10,7 @@ from wtforms import Form, TextAreaField, \
 from wtforms.validators import DataRequired
 
 from datetime import datetime
+import back_end as be
 
 import AI as AI
 # setup
@@ -25,7 +26,7 @@ FOLDER_LIST = os.listdir('static/images')
 
 TEST_LIST = os.listdir('static/images/Leonardo da vinci')
 imgdir = 'static/images/'
-created_images_dir='static/created_images/'
+created_images_dir = 'static/created_images/'
 AI_image = ''
 
 
@@ -128,29 +129,18 @@ class Finetuning(db.Model):
         return "Finetuned models('path:%s', 'author: %s'>" \
             % (self.path, self.author)
 
-def add_new_created_img(original): #called after the user switches page from /game to /result saves the created image in the
-    #Created_Imgs database
+def add_new_created_img(original_name,AI_image):
     db.session.query(Created_Imgs)
-    same_paint = Created_Imgs.query.filter_by(original=original).all()
+    ori = Painting_temp.query.filter_by(painting=original_name).first()
+    same_paint = Created_Imgs.query.filter_by(original=ori.path).all()
     print("sane", same_paint)
     l=len(same_paint)
     print("l", l)
-    if same_paint is None:
-        path = created_images_dir+original+str(l+1)
-        print("p", path)
-        ori=Painting_temp.query.filter_by(name=original).first()
-        print("a", ori.path)
-        same_paint = Created_Imgs(id=l+1, path=path, original=ori.path, votes=0)
-        print(same_paint)
-        db.session.add(same_paint)
-    else:
-        path = created_images_dir + original + str(l+1)
-        ori = Painting_temp.query.filter_by(name=original).first()
-        print("a", ori.path)
-        same_paint = Created_Imgs(id=l+1, path=path, original=original, votes=0)
-        print(same_paint)
-        db.session.add(same_paint)
-    print(Created_Imgs.query.filter_by(original=original).all())
+
+    same_paint = Created_Imgs(id=l+1, path=AI_image, original=ori.path, votes=0)
+    print(same_paint)
+    db.session.add(same_paint)
+    print(Created_Imgs.query.filter_by(original=ori.path).all())
     print("length after",l)
     print(same_paint)
     print(type(same_paint))
@@ -167,13 +157,29 @@ def Ai_start():
     session["hub_model"] = AI.start_AI()
     print(session["hub_model"])
 
+@app.route("/back_end", methods=["GET", "POST"])
+def back_end():
+    psw = None
+    pic=None
+    form = be.PswForm()
+    picForm = be.FT_Pictures()
+    #Validate Form
+    if form.validate_on_submit():
+        psw = form.psw.data
+        form.psw.date = ''
+    return render_template("back-end.html",
+                           psw=psw,form=form, pic=pic, picForm=picForm)
+
 @app.route("/", methods=["GET", "POST"])
 def start():
     painting = None
     author = None
     #change()
-    p=Painting_temp.query.filter_by(painting='Leonardo da Vinci, Gioconda').first() # to be removed
-    pc=Created_Imgs.query.all() # to be removed
+    p=Painting_temp.query.filter_by(painting='Leonardo da Vinci, Gioconda').first()
+    pc=Created_Imgs.query.all()
+    mod=Created_Imgs.query.filter_by(path="static/created_images/Leonardo da Vinci, Gioconda3.jpg").first()
+    print("pre",mod)
+
     print("created", pc)
     print(p)
     print(p.painting)
@@ -184,22 +190,18 @@ def start():
     return render_template('start.html', selectedPainting=painting,created=pa.path)
 
 
-@app.route("/getPainting", methods=["GET", "POST"]) #changes user selection after user click on an image
+@app.route("/getPainting", methods=["POST"])
 def getSelectedPainting():
     selectedpaint = request.get_json()
-    print(type(selectedpaint))
-    print('aaa', selectedpaint.values())
-    print('aaa', selectedpaint['name'])
     session['name'] = selectedpaint['name']
     session['path'] = selectedpaint['path']
     author = Painting_temp.query.filter_by(painting=selectedpaint['name']).first()
     session['author'] = author.aut
-    print("made by,", session.get('author'))
     response = make_response(jsonify('success'), 200)
     return response
 
 
-@app.route("/game", methods=['GET', 'POST']) #index.html
+@app.route("/game", methods=['GET', 'POST'])
 def home():
     print('path', session.get('path'))
     paint = Painting_temp.query.filter_by(painting=session.get('name')).first()
@@ -213,25 +215,25 @@ def getAI():
 
 model=None
 @app.route("/generate", methods=['POST', 'GET']) # AI creates pictures
-# based on the style and prompt. and sends it back to front end  CALLED FROM index.js
+# based on the style and prompt. and sends it back to front end
 def generate():
     req = request.get_json() #receives the prompt
     print("req is", req)
     prompt = req.get('message')
     print(prompt)
     global model
-    if model is None: #creates model if it hasn't been created
+    if model is None:
         author = session.get("author", None)
         t = Finetuning.query.filter_by(author=author).first()
         model = AI.select_weight(t.path)
         print("author selected", t.author)
         print("finetune path", t.path)
-
+    print('starting generation')
     path, output = AI.generate_image(prompt, model)
-    print("the output is", output.items())
     print("created path is", path)
-
-    original_p = Painting_temp.query.filter_by(path=session.get('path')).first()
+    print(session.get('name'))
+    print(session.get('path'))
+    original_p = Painting_temp.query.filter_by(painting=session.get('name')).first()
     final = AI.style_transfer(original_p.path, path, hub_model)
     print("final image", final)
 
@@ -252,7 +254,7 @@ def final():
     print('ass', AI_image)
     original_path = session.get('path', None)
     original_name = session.get('name', None)
-    add_new_created_img(original_name)
+    add_new_created_img(original_name, AI_image)
     res1 = Created_Imgs.query.with_entities(Created_Imgs.path).all()
     print("ada", res1)
     print("or", original_path)
@@ -266,7 +268,7 @@ def vote():
     return render_template("vote.html", path=session.get('path'),
                            name=session.get('name'), AI_image=created_AI)
 
-@app.route("/get_created", methods=['GET']) #called from vote.js retrieves the image created by the user
+@app.route("/get_created", methods=['GET'])
 def get_similar_creation():
     print("xd", session.get('name',None))
     orig=Painting_temp.query.filter_by(painting=session.get('name')).first()
@@ -283,7 +285,7 @@ def get_similar_creation():
 
 
 
-@app.route("/votes_update", methods=['GET', 'POST']) #vote.js updates votes on an image
+@app.route("/votes_update", methods=['GET', 'POST'])
 def increase_votes():
     entry = request.get_json()
     print("updated", entry)
@@ -299,7 +301,7 @@ def increase_votes():
     return jsonify(response)
 
 
-@app.route("/start_paints", methods=['POST', 'GET']) # called from (start.js)
+@app.route("/start_paints", methods=['POST', 'GET'])
 def get_all():
     res1 = Painting_temp.query.with_entities(Painting_temp.painting).all()
     print("ada", res1)
@@ -317,7 +319,7 @@ def get_all():
 
 
 
-@app.route("/test", methods=['POST', 'GET']) # TO BE REMOVED 
+@app.route("/test", methods=['POST', 'GET'])
 def test():
     painting = None
     path = None
@@ -334,7 +336,7 @@ def test():
                            name=name, our_painting=our_paintings)
 
 
-@app.route("/test/paint", methods=['POST', 'GET']) #TO BE REMOVED
+@app.route("/test/paint", methods=['POST', 'GET'])
 def paint():
     aut = request.get_json()
     print("aut select", aut)
@@ -347,7 +349,7 @@ def paint():
     return response
 
 
-@app.route("/test/get_paint_db", methods=['POST', 'GET'])  #TO BE REMOVED
+@app.route("/test/get_paint_db", methods=['POST', 'GET'])
 def get_painting():
     ids = request.get_json()
     print(ids)
@@ -360,7 +362,7 @@ def get_painting():
     return response
 
 
-@app.route("/test/search_paint_db", methods=['POST', 'GET']) #TO BE REMOVED
+@app.route("/test/search_paint_db", methods=['POST', 'GET'])
 def test_get_all():
     res1 = Painting_temp.query.with_entities(Painting_temp.painting).all()
     res2 = Painting_temp.query.with_entities(Painting_temp.path).all()
