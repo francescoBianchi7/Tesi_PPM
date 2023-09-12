@@ -24,7 +24,7 @@ img{
 }
 /*START.HTML*/
 .start_borders{
-     border-style: ridge;
+    border-style: ridge;
     border-width: 10px;
     border-color: black;
     border-radius: 20%;
@@ -38,6 +38,15 @@ img{
     font-style: italic;
     text-align: center;
     position: center;
+    margin-left: 5%;
+    padding: 20px;
+}
+.be_form_block{
+    width: 80%;
+    font-size: large;
+    font-family: 'Rancho', cursive;
+    font-style: italic;
+    text-align: left;
     margin-left: 5%;
     padding: 20px;
 }
@@ -168,6 +177,7 @@ img{
     color: wheat;
     width: 80%;
     padding-left: 5%;
+    padding-right: 5%;
 }
 .instruction-box{
     padding-right: 5px ;
@@ -275,6 +285,29 @@ img{
     object-fit: contain;
     padding:10px
 }
+/*wait for generated img*/
+#loading {
+    width: 2rem;
+    height: 2rem;
+    border: 5px solid #f3f3f3;
+    border-top: 6px solid #9c41f2;
+    border-radius: 100%;
+    margin: auto;
+    visibility: hidden;
+    animation: spin 1s infinite linear;
+}
+#loading.display {
+    visibility: visible;
+}
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+/*END wait for generated img*/
 .center_things{
     border-style: ridge;
     border-radius: 10%;
@@ -492,4 +525,19 @@ hr.dashed {
     display: flex;
     padding-left: 5px ;
     border-radius: 1px;
+}
+
+.image-box-v{
+    width:220px;
+    height: max-content;
+    border: dotted black 3px;
+    border-radius: 5%;
+    text-wrap: normal;
+    overflow: hidden;
+    margin: 5px;
+
+}
+.image-box-v .img{
+    height: auto;
+    width: 100%;
 }

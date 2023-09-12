@@ -1,0 +1,8 @@
+[
+    {
+        "instance_prompt": "photo of ldv gioconda",
+        "class_prompt": "photo of a gioconda",
+        "instance_data_dir": "/content/ldv",
+        "class_data_dir": "/content/gioconda"
+    }
+]

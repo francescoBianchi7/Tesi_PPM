@@ -8,22 +8,50 @@
 <body>
 {% block body %}
     {% if psw %}
-        {{ form.hidden_tag() }}
-        {{  picForm.pic.label}}
-        {{ picForm.pic}}
+        <div  class="be_form_block">
+            <div class="shadow p-3 mb-5 bg-body rounded">
+                <h3 style="color: red">Painting data to be saved for the users to access</h3>
+                <h5 style="color: red">this section will also be used for AI training</h5>
+                <label class="form-label">insert author</label>
+                <input class="form-control" type="text" id="author" placeholder="author" required>
+                <label>insert name</label>
+                <input class="form-control" type="text" id="paintingName" placeholder="painting" required>
+                <br/>
+                <label>insert image that will be shown to users<h6 style="color: red"> *will also be used for training*</h6></label>
+                <input class="form-control" type="file" id="shown_file">
+                <br/>
+                <div class="p-1 bg-dark w-50 center"></div>
+                <h3 style="color: red">Training data</h3>
+                <label>insert training files</label>
+                <input class="form-control" type="file" id="training_files" multiple>
+                <button class="btn_primary" onclick="submitNewImg()">Submit</button>
+            </div>
+        </div>
+        <div  class="be_form_block">
+        <h3 style="color:red; font-weight: bold">if no more paintings from that author are present
+        the author will also be removed</h3>
+            <select id="authors_list" onchange="paints_by_author()">
+                <option value="empty"></option>
+            </select>
+            <select id="painting_list"></select>
+                <option value="empty"></option>
+            <button class="btn-secondary" onclick="deleteFile()">Submit</button>
+        </div>
     {% else %}
     <h1>what's your name</h1>
     <br/>
     <form method="POST">
         {{ form.hidden_tag() }}
-        {{  form.psw.label}}
+        {{ form.psw.label}}
         {{ form.psw }}
         {{ form.submit }}
+
     </form>
     {% endif %}
 {% endblock %}
 </body>
 {% block script %}
-
+<script type="module"
+        src="{{ url_for('static',filename='js/back-end.js')}}"></script>
 {% endblock %}
 </html>

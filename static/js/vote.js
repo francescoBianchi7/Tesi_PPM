@@ -22,7 +22,7 @@ window.commitVote=function(path,votes){
 
 
 window.voting=function() {
-    document.querySelectorAll(".image-box").forEach(i => {
+    document.querySelectorAll(".image-box-v").forEach(i => {
         console.log("im working ")
         var check = i.querySelector(".my-check")
         check.addEventListener('click', (e) => {
@@ -64,7 +64,7 @@ window.get_created= function(){
             for(const [key, value] of Object.entries(json)) {
                 console.log("AP", key, value)
                 var img_box = document.createElement('div')
-                img_box.className = 'image-box'
+                img_box.className = 'image-box-v'
                 img_box.dataset.name = key
                 var img = document.createElement('img')
 
@@ -73,9 +73,10 @@ window.get_created= function(){
                 img_box.appendChild(img);
                 var vote_box=vbox_create(value)
                 img_box.appendChild(vote_box)
-                document.querySelector(".images").appendChild(img_box)
+                document.querySelector(".images_f").appendChild(img_box)
             }
             voting()
+
         })
 }
 

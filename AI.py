@@ -1,41 +1,69 @@
-from textwrap import wrap
-import os
-
-os.environ['TFHUB_MODEL_LOAD_FORMAT'] = 'COMPRESSED'
-
-import keras_cv
 import matplotlib.pyplot as plt
-import numpy as np
-# import pandas as pd
-import tensorflow as tf
-# import tensorflow.experimental.numpy as tnp
-from keras_cv.models.stable_diffusion.clip_tokenizer import SimpleTokenizer
-from keras_cv.models.stable_diffusion.diffusion_model import DiffusionModel
-from keras_cv.models.stable_diffusion.image_encoder import ImageEncoder
-from keras_cv.models.stable_diffusion.noise_scheduler import NoiseScheduler
-from keras_cv.models.stable_diffusion.text_encoder import TextEncoder
-from tensorflow import keras
-
 import PIL.Image
 import time
 import functools
 import tensorflow_hub as hub
+import numpy as np
+import tensorflow as tf
 
 
-# prompts verrà sostituito con input dell'utente
-prompts = ["Gioconda"]  # input dato dall'utente
 
-images_to_generate = 1  # il numero di immagini da generare
-outputs = {}  # qui vengono messe le immagini generate dall'algoritmo
+#@markdown Specify the weights directory to use (leave blank for latest)
+WEIGHTS_DIR = "/content/drive/MyDrive/stable_diffusion_weights/800" #@param {type:"string"}
+if WEIGHTS_DIR == "":
+    from natsort import natsorted
+    from glob import glob
+    import os
+    WEIGHTS_DIR = natsorted(glob(OUTPUT_DIR + os.sep + "*"))[-1]
+print(f"[*] WEIGHTS_DIR={WEIGHTS_DIR}")
 
-def start_AI():  # chiamato all'avvio
-    os.environ['TFHUB_MODEL_LOAD_FORMAT'] = 'COMPRESSED'
-    #mpl.rcParams['figure.figsize'] = (12, 12)  # avvio
-    #mpl.rcParams['axes.grid'] = False  # avvio
-    hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
-    print("Ai started")
-    return hub_model
+import torch
+from torch import autocast
+from diffusers import StableDiffusionPipeline, DDIMScheduler
 
+
+model_path = WEIGHTS_DIR             # If you want to use previously trained model saved in gdrive, replace this with the full path of model in gdrive
+
+pipe = StableDiffusionPipeline.from_pretrained(model_path, safety_checker=None, torch_dtype=torch.float16).to("cuda")
+pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
+pipe.enable_xformers_memory_efficient_attention()
+g_cuda = None
+
+
+#@markdown Can set random seed here for reproducibility.
+g_cuda = torch.Generator(device='cuda')
+seed = -1 #@param {type:"number"}
+#seed=-1 per non dare lo stesso numero di seed a ogni immagine
+g_cuda.manual_seed(seed)
+
+
+#@title Run for generating images.
+
+prompt = "photo of ldv gioconda" #@param {type:"string"}
+negative_prompt = "painting of a woman looking straight on a swimming poll" #@param {type:"string"}
+num_samples = 2 #@param {type:"number"}
+guidance_scale = 5 #@param {type:"number"}
+num_inference_steps = 50 #@param {type:"number"}
+height = 512 #@param {type:"number"}
+width = 512 #@param {type:"number"}
+
+with autocast("cuda"), torch.inference_mode():
+    images = pipe(
+        prompt,
+        height=height,
+        width=width,
+        negative_prompt=negative_prompt,
+        num_images_per_prompt=num_samples,
+        num_inference_steps=num_inference_steps,
+        guidance_scale=guidance_scale,
+        generator=g_cuda
+    ).images
+
+for img in images:
+    #display(img)
+    plt.imshow(img)
+    plt.axis("off")
+    plt.savefig('generated_image.jpg')
 
 def select_weight(stable_diff_path):  # author servirà per selezionare il finetuning
     # una volta che l'utente ha selezionato l'opera, dato che poi avremmo più di un possibile autore
@@ -90,41 +118,11 @@ def style_transfer(original, generated, hub_model):  # original e generated sono
 def commit_image(final_image,dir, name,i):
     # verrà ulteriormente inserita in una tabella del database.
     print("inserting num:", i)
-    path=dir+name+str(i)+".jpg"
+    path = dir+name+str(i)+".jpg"
     final_image.save(path)
     return path
 
 
-
-"""
-
-
-
-os.environ["SM_FRAMEWORK"] = "tf.keras"
-
-#mpl.rcParams['figure.figsize'] = (12, 12) #avvio
-#mpl.rcParams['axes.grid'] = False #avvio
-"""
-
-"""una volta che l'utente ha selezionato l'opera, dato che poi avremmo più di un possibile autore
-weights_path = 'static/images/Leonardo da vinci/finetuned_stable_diffusion.h5' #dopo che l'utente ha selezionato l'opera
-img_height = img_width = 512
-paintings_model = keras_cv.models.StableDiffusion(
-    img_width=img_width, img_height=img_height
-)  # definizione del modello, prende in input la dimensione dell'immagine, sono funzioni di keras, librerie da importare
-paintings_model.diffusion_model.load_weights(weights_path)  # carica il file .h5
-
-"""
-
-
-""" inizio generazione 
-for prompt in prompts:
-    generated_images = paintings_model.text_to_image(
-        prompt, batch_size=images_to_generate, unconditional_guidance_scale=40
-    )
-    # questo for applica l'algoritmo di text to image, prendendo l'input(prompt), il n di immagini da generare, dimensioni. mette il risultato in outputs
-    outputs.update({prompt: generated_images})
-"""
 
 
 def plot_images(images):
@@ -175,26 +173,3 @@ def tensor_to_image(tensor):
     return PIL.Image.fromarray(tensor)
 
 
-"""style transfer post generazione, dato che all'utente 
-verrà mostrata tutte le righe sono eseguite a fine della generazione, ma prima di mostrarla a schermo"""
-"""
-content_path = '/content/generated_image.jpg'
-style_path = '/content/drive/MyDrive/originale.jpeg'
-content_image = load_img(content_path)
-style_image = load_img(style_path)
-"""
-""" generazione
-stylized_image = hub_model(tf.constant(content_image), tf.constant(style_image))[0]
-# utilizza il modello caricato sopra, gli passa le 2 immagini e genera il risultato finale
-"""
-""" fine generazione
-final_image = tensor_to_image(stylized_image)
-final_image = final_image.save('finale.jpg')  # salva immagine come file
-"""
-"""
-non penso che seriviranno,
- le immagini saranno mostrate nella pagina html e quindi penso basti inviare il path dell'immagine 
- """
-# im=PIL.Image.open("finale.jpg")
-# im.show()
-# im #su colab im.show() non funziona e va messo solo il nome della variabile per mostrare l'immagine
