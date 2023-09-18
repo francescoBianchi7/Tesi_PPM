@@ -1,0 +1,55 @@
+{% extends "base.html"%}
+<body>
+{% block head %}
+    <title>Title</title>
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Home</title>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'></link>
+</head>
+{% endblock %}
+{% block body %}
+   <div class="page-top d-flex align-items-center">
+        <div class="title-box d-inline-block">
+            <h1 class="title-text"> Test Your Memory </h1>
+        </div>
+       <div class="instruction-box ml-auto mr-4">
+           <button class="instructions-btn" id="is-btn" style="font-size:30px;cursor:pointer" onclick="window.location.href='{{ url_for('back_end') }}'">
+               <span>Back End</span>
+           </button>
+       </div>
+   </div>
+        <div id="remove" class="description_block start_borders">
+            <h2>WELCOME</h2>
+            <h3>Test your memory</h3>
+            <h3>Try to recreate a painting by describing it to an AI and see what it creates
+            </h3>
+            <br>
+            <h5 style="font-weight: bold">NOTE:*the AI will not generate a perfect copy of the original *</h5>
+
+        </div>
+   <div class="painting_container">
+        <div class="container">
+            <h4>Please select the painting you want to test your memory on</h4>
+            <div class="aut_select">
+                <div class="search_box">
+                    <i class="bx bx-search"></i>
+                    <input type="text" placeholder="search the painting">
+                </div>
+                <h5 id="temp_select">selected: {{ selectedPainting }}</h5>
+                <button class="startButton" id="is-btn" style="font-size:30px; position: center"
+                         onclick="window.location.href='{{ url_for('home') }}'" disabled>Start</button>
+                <div class="images">
+
+                </div>
+            </div>
+        </div>
+   </div>
+{% endblock %}
+{% block script %}
+<script type="module"
+        src="{{ url_for('static',filename='js/start.js')}}"></script>
+{% endblock %}
+</body>

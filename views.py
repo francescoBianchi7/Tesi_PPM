@@ -27,8 +27,6 @@ base = "http://127.0.0.1:5000/"
 # #GLOBAL VARIABLES
 FOLDER_LIST = os.listdir('static/images')
 
-TEST_LIST = os.listdir('static/images/Leonardo da vinci')
-
 created_images_dir = 'static/created_images/'
 AI_image = ''
 
@@ -120,15 +118,23 @@ def change():
 def back_end():
     psw = None
     pic = None
+    operation = None
     form = be.PswForm()
     picForm = be.FT_Pictures()
     tempForm = be.temp_add_Pictures
     # Validate Form
     if form.validate_on_submit():
-        psw = form.psw.data
-        form.psw.date = ''
+        if form.psw.data == be.p:
+            operation = form.select_op.data
+            psw = form.psw.data
+            form.psw.data = ''
+            print(operation, " ", psw)
+        else:
+            print("psw wasn't equal")
+            flash("psw wasn't equal")
+            form.psw.data = ''
     return render_template("back-end.html",
-                           psw=psw, form=form, pic=pic, picForm=picForm)
+                           psw=psw, form=form, pic=pic, picForm=picForm, operation=operation)
 
 
 @app.route("/upload-img", methods=["POST", "GET"])
@@ -139,12 +145,12 @@ def upload_img():
     author = request.form['author']
     name = request.form['name']
     file = request.files['file']
-    training = request.files.getlist('training[]')
-    print("files for trainig", training)
-    for i in training:
+    training_files = request.files.getlist('training[]')
+    print("files for trainig", training_files)
+    for i in training_files:
         print("x", i)
 
-    full_path, shown_name = be.upload_painting(author, name, file)
+    full_path, shown_name = be.upload_painting(author, name, file, training_files)
     print("full path is", full_path)
     db_add_new_painting(author, shown_name, full_path)
     response = make_response(jsonify(full_path), 200)
