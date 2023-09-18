@@ -11,10 +11,15 @@
 </head>
 {% endblock %}
 {% block body %}
-   <div class="page-top">
-        <div class="title-box">
+   <div class="page-top d-flex align-items-center">
+        <div class="title-box d-inline-block">
             <h1 class="title-text"> Test Your Memory </h1>
         </div>
+       <div class="instruction-box ml-auto mr-4">
+           <button class="instructions-btn" id="is-btn" style="font-size:30px;cursor:pointer" onclick="window.location.href='{{ url_for('back_end') }}'">
+               <span>Back End</span>
+           </button>
+       </div>
    </div>
         <div id="remove" class="description_block start_borders">
             <h2>WELCOME</h2>
