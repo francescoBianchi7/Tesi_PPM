@@ -59,13 +59,7 @@ window.author_list=function (){
         .then(json=>{
             console.log("received", JSON.stringify(json))
             let element=document.getElementById("authors_list")
-            while (element.firstChild) {
-                    element.removeChild(element.firstChild);
-            }
-            let empty=document.createElement("option")
-            empty.value="empty"
-            empty.innerText=""
-            element.appendChild(empty)
+            remove_options(element)
             for(const i in json) {
                 console.log("f", json[i])
                 let option = document.createElement("option")
@@ -79,8 +73,8 @@ window.author_list=function (){
 window.paints_by_author=function (){
     var selected = document.getElementById("authors_list");
     if(selected.value==='empty'){
+        remove_options(document.getElementById("painting_list"))
         document.getElementById("painting_list").value='empty'
-
     }
     else {
         fetch(`${Config.BASE_URL}/get_paints_by_author`, {
@@ -100,10 +94,7 @@ window.paints_by_author=function (){
                 console.log("paints", data)
                 var x = document.getElementById("painting_list")
                 let element = document.getElementById("painting_list");
-                while (element.firstChild) {
-                    element.removeChild(element.firstChild);
-                }
-
+                remove_options(element)
                 for (const i in data) {
                     let option = document.createElement("option")
                     console.log("x", data[i])
@@ -157,5 +148,14 @@ window.contains = function( value ) {
     }
     return false;
 }
-
+window.remove_options=function (element){
+    if(element) {
+        var options=element.options
+        for(var i=options.length-1; i>0;i--) {
+            if(options[i].value!=='empty')
+                console.log("asd",options[i])
+                element.removeChild(options[i]);
+        }
+    }
+}
 document.addEventListener("DOMContentLoaded", author_list);
