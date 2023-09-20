@@ -44,7 +44,7 @@ window.submitSelected = function(name, path){
         credentials: "include", //cookies on the page
         body: JSON.stringify(entry),
         cache: "no-cache",
-        mode: 'no-cors',
+        mode: 'cors',
         headers: new Headers({
             "content-type": "application/json"
         })
@@ -79,7 +79,7 @@ window.get_paintings = function(){
         method: "GET",
         credentials: "include", //cookies on the page
         cache: "no-cache",
-        mode: 'no-cors',
+        mode: 'cors',
         headers: new Headers({
             "content-type": "application/json"
         })
