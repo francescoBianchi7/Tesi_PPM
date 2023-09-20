@@ -282,14 +282,14 @@ def increase_votes():
 
 @app.route("/start_paints", methods=['POST', 'GET'])
 def get_all():
-    res1 = Painting_temp.query.with_entities(Painting_temp.painting).all()
-    print("ada", res1)
-    res2 = Painting_temp.query.with_entities(Painting_temp.path).all()
-    print("ada3", res2)
+   # res2 = Painting_temp.query.with_entities(Painting_temp.path).all()
+    #print("ada3", res2)
     d = {}
-    for i in range(len(res2)):
-        t = Painting_temp.query.filter_by(id=i).first()
-        d[t.painting] = t.path
+    #temporary
+    d['Durer, hare']="/static/images/Durer/Durer, hare.jpg"
+    #for i in range(len(res2)):
+     #   t = Painting_temp.query.filter_by(id=i).first()
+      #  d[t.painting] = t.path
     print("end_d", d)
     response = jsonify(d)
     return response
