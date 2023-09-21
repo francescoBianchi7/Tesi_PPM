@@ -37,9 +37,10 @@ window.submitSelected = function(name, path){
         name: name,
         path: path
     };
+        //${Config.BASE_URL}
     // takes 2 argument an url or endpoint where to post or get data from
     // and an init constructor,object full of instructions
-    fetch(`${Config.BASE_URL}/getPainting`, {
+    fetch(`onrender.com/getPainting`, {
         method: "POST",
         credentials: "include", //cookies on the page
         body: JSON.stringify(entry),
@@ -75,7 +76,7 @@ window.getSelected=function (){
 }
 
 window.get_paintings = function(){
-    fetch(`${Config.BASE_URL}/start_paints`, {
+    fetch(`onrender.com/start_paints`, {
         method: "GET",
         credentials: "include", //cookies on the page
         cache: "no-cache",
