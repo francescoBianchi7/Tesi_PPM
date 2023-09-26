@@ -1,5 +1,5 @@
 export class Config {
-    static SERVER_URL = "http://onrender.com/";
+    static SERVER_URL = "http://tesi-bianchi-dellarosa.onrender.com/";
     static BASE_URL = `${this.SERVER_URL}`;
     static TEMP_URL = "http://0.0.0.0:10000"
 }
