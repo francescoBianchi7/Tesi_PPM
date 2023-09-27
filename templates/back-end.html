@@ -10,6 +10,17 @@
 
     {% if psw %}
         {% if operation=='Add Painting' %}
+            <div id="myNav" class="overlay" style="display: none">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="overlay-content">
+            <div id="loading">
+                             </div>
+                <h2>Welcome to the Game!!</h2>
+                <p>this is an example of the pop up window containing the description on how the game works</p>
+                <p>this is another paragraph describing what you can do after having played</p>
+                <p>click on the X when you are done reading to close this window</p>
+            </div>
+        </div>
             <div class="be_form_block">
                 <div class="shadow p-3 mb-5 bg-body rounded">
                     <h3 style="color: red">Painting data to be saved for the users to access</h3>

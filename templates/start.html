@@ -16,7 +16,7 @@
             <h1 class="title-text"> Test Your Memory </h1>
         </div>
        <div class="instruction-box ml-auto mr-4">
-           <button class="instructions-btn" id="is-btn" style="font-size:30px;cursor:pointer" onclick="window.location.href='{{ url_for('back_end') }}'">
+           <button class="instructions-btn"  style="font-size:30px;cursor:pointer" onclick="window.location.href='{{ url_for('back_end') }}'">
                <span>Back End</span>
            </button>
        </div>
@@ -40,7 +40,7 @@
                 </div>
                 <h5 id="temp_select">selected: {{ selectedPainting }}</h5>
                 <button class="startButton" id="is-btn" style="font-size:30px; position: center"
-                         onclick="window.location.href='{{ url_for('home') }}'" disabled>Start</button>
+                         onclick="window.location.href='{{ url_for('game') }}'" disabled>Start</button>
                 <div class="images">
 
                 </div>
