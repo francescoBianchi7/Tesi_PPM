@@ -5,7 +5,16 @@ function myFunction() {
 
 console.log("i'm loaded");
 const loader = document.querySelector("#loading");
+/* Open */
+window.openNav=function() {
+    console.log("clicked")
+  document.getElementById("myNav").style.display = "block";
+}
 
+/* Close */
+window.closeNav=function () {
+  document.getElementById("myNav").style.display = "none";
+}
 let AI_image;
 window.displayLoading=function () {
     loader.classList.add("display");

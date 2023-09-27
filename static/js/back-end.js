@@ -1,5 +1,33 @@
 import {Config} from "./config.js";
 console.log("loaded")
+const loader = document.querySelector("#loading");
+
+/* Open */
+window.openNav=function() {
+    console.log("clicked")
+    displayLoading()
+  document.getElementById("myNav").style.display = "block";
+
+}
+
+/* Close */
+window.closeNav=function () {
+    hideLoading()
+  document.getElementById("myNav").style.display = "none";
+}
+
+window.displayLoading=function () {
+    loader.classList.add("display");
+    // to stop loading after some time
+    //let text=document.createElement('h2')
+    //text.innerHTML="The AI is generating your image, please wait"
+    //text.style.color='black'
+}
+
+// hiding loading
+window.hideLoading=function () {
+    loader.classList.remove("display");
+}
 
 window.submitNewImg = function() {
     var paintingname = document.getElementById("paintingName")
@@ -11,6 +39,7 @@ window.submitNewImg = function() {
         console.log('not a valid submit')
         window.alert('please insert a valid description')
     } else {
+
         let formData =new FormData()
         formData.append("name",paintingname.value)
         console.log("name",formData.get("name"))
@@ -30,6 +59,7 @@ window.submitNewImg = function() {
         for(const [key, value] of formData) {
             console.log("all", key, value)
         }
+        openNav()
         // takes 2 argument an url or endpoint where to post or get data from
         // and an init constructor,object full of instructions
         fetch(`${Config.BASE_URL}/upload-img`, {
@@ -40,6 +70,7 @@ window.submitNewImg = function() {
             //})
         }).then(function () {
             console.log(formData)
+            closeNav()
             window.alert(formData.get("name")+"added to database")
             author_list()
             paints_by_author()
@@ -59,13 +90,7 @@ window.author_list=function (){
         .then(json=>{
             console.log("received", JSON.stringify(json))
             let element=document.getElementById("authors_list")
-            while (element.firstChild) {
-                    element.removeChild(element.firstChild);
-            }
-            let empty=document.createElement("option")
-            empty.value="empty"
-            empty.innerText=""
-            element.appendChild(empty)
+            remove_options(element)
             for(const i in json) {
                 console.log("f", json[i])
                 let option = document.createElement("option")
@@ -79,8 +104,8 @@ window.author_list=function (){
 window.paints_by_author=function (){
     var selected = document.getElementById("authors_list");
     if(selected.value==='empty'){
+        remove_options(document.getElementById("painting_list"))
         document.getElementById("painting_list").value='empty'
-
     }
     else {
         fetch(`${Config.BASE_URL}/get_paints_by_author`, {
@@ -100,10 +125,7 @@ window.paints_by_author=function (){
                 console.log("paints", data)
                 var x = document.getElementById("painting_list")
                 let element = document.getElementById("painting_list");
-                while (element.firstChild) {
-                    element.removeChild(element.firstChild);
-                }
-
+                remove_options(element)
                 for (const i in data) {
                     let option = document.createElement("option")
                     console.log("x", data[i])
@@ -157,5 +179,17 @@ window.contains = function( value ) {
     }
     return false;
 }
+window.remove_options=function (element){
+    if(element) {
+        var options=element.options
+        for(var i=options.length-1; i>0;i--) {
+            if(options[i].value!=='empty')
+                console.log("asd",options[i])
+                element.removeChild(options[i]);
+        }
+    }
+}
+
+
 
 document.addEventListener("DOMContentLoaded", author_list);

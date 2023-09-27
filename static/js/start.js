@@ -8,6 +8,7 @@ const   search=document.querySelector(".search_box input"),
 var selected, selectedpath, selectedbox;
 
 document.getElementById("temp_select").addEventListener("",e=>{
+    console.log("x", document.getElementById("is-btn").disabled)
     document.getElementById("is-btn").disabled=false
     console.log(document.getElementById("is-btn").isEnabled())
 })
@@ -44,11 +45,13 @@ window.submitSelected = function(name, path){
         credentials: "include", //cookies on the page
         body: JSON.stringify(entry),
         cache: "no-cache",
+
         headers: new Headers({
             "content-type": "application/json"
         })
-    }).then(function(){
+    }).then(function(response){
         console.log(entry)
+        console.log(response.json())
     })
 }
 
@@ -62,6 +65,7 @@ window.changeSelection=function (ib,name,path){
         ib.style.borderColor='red'
         console.log("you selected", selected);
         console.log("path is", selectedpath);
+        console.log("x", document.getElementById("is-btn").disabled)
         document.getElementById("temp_select").textContent = selected
         document.getElementById("is-btn").disabled = false
         submitSelected(name, path)
