@@ -3,7 +3,7 @@ import time
 from flask import Flask
 from flask import Blueprint, render_template, request, jsonify, redirect, \
     url_for, flash, make_response, session
-
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from wtforms import Form, TextAreaField, \
     validators, StringField, SubmitField, SelectField
@@ -14,10 +14,12 @@ import back_end as be
 
 # import AI_train
 
-# import AI as AI
+import AI as AI
 # setup
 app = Flask(__name__, static_url_path="/static")
+CORS(app)
 app.config['SECRET_KEY'] = 'your secret key'
+#postgres://tesi_bianchi_user:aA5FNkIE6xmcCzO6c8wT8BWnt2t0ZxuS@dpg-ck4qm6l8ggls739oato0-a.frankfurt-postgres.render.com/tesi_bianchi
 # add Db
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///images.db'
 # init DB
@@ -154,6 +156,7 @@ def upload_img():
     print("full path is", full_path)
     db_add_new_painting(author, shown_name, full_path)
     response = make_response(jsonify(full_path), 200)
+    time.sleep(5)
     return response
 
 
@@ -162,7 +165,8 @@ def start():
     painting = None
     author = None
     # change()
-
+    print(AI.torch.cuda.is_available())
+    print(AI.torch.version.cuda)
     # add_new_created_img(p.path)
     # fill()
     pa = Created_Imgs.query.filter_by(id=2).first()
@@ -176,22 +180,39 @@ def getSelectedPainting():
     session['name'] = selectedpaint['name']
     session['path'] = selectedpaint['path']
     author = Painting_temp.query.filter_by(painting=selectedpaint['name']).first()
-    session['author'] = author.aut
+    #session['author'] = author.aut
+    print(selectedpaint['name'])
     response = make_response(jsonify('success'), 200)
+    return response
+
+@app.route("/start_paints", methods=['POST', 'GET'])
+def get_all():
+    res1 = Painting_temp.query.with_entities(Painting_temp.painting).all()
+    print("ada", res1)
+    res2 = Painting_temp.query.with_entities(Painting_temp.path).all()
+    print("ada3", res2)
+    d = {}
+    d["Durer, Hare"] = "/static/images/Durer/Durer, Hare.jpg"
+    d["Venere 1"]="/static/images/Botticelli/venere 1.jpg"
+    for i in range(len(res2)):
+        t = Painting_temp.query.filter_by(id=i).first()
+        d[t.painting] = t.path
+    print("end_d", d)
+    response = jsonify(d)
     return response
 
 
 @app.route("/game", methods=['GET', 'POST'])
-def home():
+def game():
     print('path', session.get('path'))
-    paint = Painting_temp.query.filter_by(painting=session.get('name')).first()
-    path = paint.path
-    print('path2', path)
+    #paint = Painting_temp.query.filter_by(painting=session.get('name')).first()
+    #path = paint.path
+    #print('path2', path)
     return render_template("index.html", paintingName=session.get('name'), path=session.get('path'))
 
 
 model = None
-"""@app.route("/generate", methods=['POST', 'GET']) # AI creates pictures
+@app.route("/generate", methods=['POST', 'GET']) # AI creates pictures
 # based on the style and prompt. and sends it back to front end
 def generate():
     req = request.get_json() #receives the prompt
@@ -201,30 +222,33 @@ def generate():
     global model
     if model is None:
         author = session.get("author", None)
-        t = Finetuning.query.filter_by(author=author).first()
-        model = AI.select_weight(t.path)
-        print("author selected", t.author)
-        print("finetune path", t.path)
+        #t = Finetuning.query.filter_by(author=author).first()
+        g_cuda, pipe = AI.activate_generator("content/stable_diffusion_weights/Finetuning_venere/800")
+        #print("author selected", t.author)
+        #print("finetune path", t.path)
     print('starting generation')
-    path, output = AI.generate_image(prompt, model)
-    print("created path is", path)
+    user_prompt = prompt
+    training_prompt = " "
+    images = AI.generate(user_prompt, training_prompt, g_cuda, pipe)
+    print("created path is", images)
+    print("created path is", images[0])
     print(session.get('name'))
     print(session.get('path'))
-    original_p = Painting_temp.query.filter_by(painting=session.get('name')).first()
-    final = AI.style_transfer(original_p.path, path, hub_model)
+    #original_p = Painting_temp.query.filter_by(painting=session.get('name')).first()
+    #final = AI.style_transfer(original_p.path, images[0])
     print("final image", final)
 
     im = AI.PIL.Image.open("finale.jpg")
-    same_paint = Created_Imgs.query.filter_by(original=original_p.path).all()
-    path = AI.commit_image(final, created_images_dir, original_p.painting, len(same_paint)+1)
-    l=len(same_paint)+1
-    painting_path = created_images_dir+original_p.painting+str(l)+".jpg"
-    session['AI_image'] = painting_path# keeps the image in memory for all the duration of the session
-    print("created path is", path)
-
-    response = jsonify(painting_path)# sends back generated image
+    #same_paint = Created_Imgs.query.filter_by(original=original_p.path).all()
+    #path = AI.commit_image(final, created_images_dir, original_p.painting, len(same_paint)+1)
+    #l = len(same_paint)+1
+    #painting_path = created_images_dir+original_p.painting+str(l)+".jpg"
+    #session['AI_image'] = painting_path# keeps the image in memory for all the duration of the session
+    session['AI_image'] = images[0]
+    print("created path is", images[0])
+    response = jsonify(images[0])
+    #response = jsonify(painting_path)# sends back generated image
     return response
-"""
 
 
 @app.route("/result", methods=['POST', 'GET'])
@@ -280,19 +304,6 @@ def increase_votes():
     return jsonify(response)
 
 
-@app.route("/start_paints", methods=['POST', 'GET'])
-def get_all():
-   # res2 = Painting_temp.query.with_entities(Painting_temp.path).all()
-    #print("ada3", res2)
-    d = {}
-    #temporary
-    d['Durer, hare']="/static/images/Durer/Durer, hare.jpg"
-    #for i in range(len(res2)):
-     #   t = Painting_temp.query.filter_by(id=i).first()
-      #  d[t.painting] = t.path
-    print("end_d", d)
-    response = jsonify(d)
-    return response
 
 
 def add_new_created_img(original_name, AI_image):

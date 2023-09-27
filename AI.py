@@ -5,80 +5,67 @@ import functools
 import tensorflow_hub as hub
 import numpy as np
 import tensorflow as tf
-
+from natsort import natsorted
+from glob import glob
+import os
 
 
 #@markdown Specify the weights directory to use (leave blank for latest)
-WEIGHTS_DIR = "/content/drive/MyDrive/stable_diffusion_weights/800" #@param {type:"string"}
-if WEIGHTS_DIR == "":
-    from natsort import natsorted
-    from glob import glob
-    import os
-    WEIGHTS_DIR = natsorted(glob(OUTPUT_DIR + os.sep + "*"))[-1]
-print(f"[*] WEIGHTS_DIR={WEIGHTS_DIR}")
+def select_weight_directory(weight_dir):
+    WEIGHTS_DIR = weight_dir #@param {type:"string"}
+    model_path = WEIGHTS_DIR
+    return model_path
 
 import torch
 from torch import autocast
 from diffusers import StableDiffusionPipeline, DDIMScheduler
 
 
-model_path = WEIGHTS_DIR             # If you want to use previously trained model saved in gdrive, replace this with the full path of model in gdrive
-
-pipe = StableDiffusionPipeline.from_pretrained(model_path, safety_checker=None, torch_dtype=torch.float16).to("cuda")
-pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
-pipe.enable_xformers_memory_efficient_attention()
-g_cuda = None
-
-
-#@markdown Can set random seed here for reproducibility.
-g_cuda = torch.Generator(device='cuda')
-seed = -1 #@param {type:"number"}
-#seed=-1 per non dare lo stesso numero di seed a ogni immagine
-g_cuda.manual_seed(seed)
-
+ # If you want to use previously trained model saved in gdrive, replace this with the full path of model in gdrive
+def activate_generator(weights_dir):
+    model_path = weights_dir
+    pipe = StableDiffusionPipeline.from_pretrained(model_path, safety_checker=None, torch_dtype=torch.float16).to("cuda")
+    pipe.scheduler = DDIMScheduler.from_config(pipe.scheduler.config)
+    pipe.enable_xformers_memory_efficient_attention()
+    g_cuda = None
+    #@markdown Can set random seed here for reproducibility.
+    g_cuda = torch.Generator(device='cuda')
+    seed = -1 #@param {type:"number"}
+    #seed=-1 per non dare lo stesso numero di seed a ogni immagine
+    g_cuda.manual_seed(seed)
+    return g_cuda, pipe
 
 #@title Run for generating images.
+def generate(user_prompt, training_prompt, g_cuda, pipe):
+    prompt = "photo of ldv gioconda" #@param {type:"string"}
+    negative_prompt = "painting of a woman looking straight on a swimming poll" #@param {type:"string"}
+    num_samples = 1 #@param {type:"number"}
+    guidance_scale = 5 #@param {type:"number"}
+    num_inference_steps = 50 #@param {type:"number"}
+    height = 512 #@param {type:"number"}
+    width = 512 #@param {type:"number"}
 
-prompt = "photo of ldv gioconda" #@param {type:"string"}
-negative_prompt = "painting of a woman looking straight on a swimming poll" #@param {type:"string"}
-num_samples = 2 #@param {type:"number"}
-guidance_scale = 5 #@param {type:"number"}
-num_inference_steps = 50 #@param {type:"number"}
-height = 512 #@param {type:"number"}
-width = 512 #@param {type:"number"}
-
-with autocast("cuda"), torch.inference_mode():
-    images = pipe(
-        prompt,
-        height=height,
-        width=width,
-        negative_prompt=negative_prompt,
-        num_images_per_prompt=num_samples,
-        num_inference_steps=num_inference_steps,
-        guidance_scale=guidance_scale,
-        generator=g_cuda
-    ).images
-
-for img in images:
-    #display(img)
-    plt.imshow(img)
-    plt.axis("off")
-    plt.savefig('generated_image.jpg')
-
-def select_weight(stable_diff_path):  # author servirà per selezionare il finetuning
-    # una volta che l'utente ha selezionato l'opera, dato che poi avremmo più di un possibile autore
-    #weights_path = '/content/drive/MyDrive/finetuned_stable_diffusion.h5'  # dopo che l'utente ha selezionato l'opera
-    weights_path = stable_diff_path
-    # da cambiare, verrà preso tramite database
-    # will be changed to the right path
-    img_height = img_width = 512
-    # definizione del modello, prende in input la dimensione dell'immagine, sono funzioni di keras, librerie da importare
-    paintings_model = keras_cv.models.StableDiffusion(
-        img_width=img_width, img_height=img_height)
-    paintings_model.diffusion_model.load_weights(weights_path)  # carica il file .h5
-    return paintings_model
+    with autocast("cuda"), torch.inference_mode():
+        images = pipe(
+            prompt,
+            height=height,
+            width=width,
+            negative_prompt=negative_prompt,
+            num_images_per_prompt=num_samples,
+            num_inference_steps=num_inference_steps,
+            guidance_scale=guidance_scale,
+            generator=g_cuda
+        ).images
+    print(images)
+    for img in images:
+        #display(img)
+        plt.imshow(img)
+        plt.axis("off")
+        plt.savefig('generated_image.jpg')
+    return images
 
 
+"""OLD GENERATION
 def generate_image(user_prompt, paintings_model):
     prompts = [user_prompt]
     for prompt in prompts:
@@ -92,9 +79,11 @@ def generate_image(user_prompt, paintings_model):
         path = plot_images(outputs[prompt])
     print("plotted")
     return path, outputs
+"""
 
-def style_transfer(original, generated, hub_model):  # original e generated sono path
+def style_transfer(original, generated): # original e generated sono path
     print("starting style transfer with", original)
+    hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
     content_path = generated
     print("generated", content_path)
     print("model", hub_model)
@@ -115,14 +104,13 @@ def style_transfer(original, generated, hub_model):  # original e generated sono
     # almeno evito di salvare l'immagine mille volte
     return final_image
 
-def commit_image(final_image,dir, name,i):
+
+def commit_image(final_image, dir, name,i):
     # verrà ulteriormente inserita in una tabella del database.
     print("inserting num:", i)
     path = dir+name+str(i)+".jpg"
     final_image.save(path)
     return path
-
-
 
 
 def plot_images(images):
@@ -171,5 +159,3 @@ def tensor_to_image(tensor):
         assert tensor.shape[0] == 1
         tensor = tensor[0]
     return PIL.Image.fromarray(tensor)
-
-
