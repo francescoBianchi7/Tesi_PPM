@@ -5,9 +5,9 @@ from flask_wtf import FlaskForm
 
 from flask_sqlalchemy import SQLAlchemy
 from wtforms import Form, TextAreaField, \
-    validators, StringField, SubmitField, SelectField, MultipleFileField, FileField
+    validators, StringField, PasswordField,BooleanField,ValidationError, SubmitField, SelectField, MultipleFileField, FileField
 from werkzeug.utils import secure_filename
-from wtforms.validators import DataRequired, EqualTo
+from wtforms.validators import DataRequired, EqualTo, Length
 import os
 from datetime import datetime
 import AI_train
@@ -17,11 +17,24 @@ imgdir = 'static/images/'
 training_dir = 'content'
 p = 'psw'
 
+
+#FORMS
 class PswForm(FlaskForm):
     select_op = SelectField("Select operation", choices=["Delete Painting", "Add Painting"])
     psw = StringField("insert psw", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
+class MuseumForm(FlaskForm):
+    museum = StringField("insert museum name", validators=[DataRequired()])
+    username= StringField("enter a username(you will login with this)",validators=[DataRequired()])
+    password_hash = PasswordField("Insert password", validators=[DataRequired(),EqualTo('password_hash2',message='passwords must match')])
+    password_hash2 = PasswordField("Confirm password", validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+class LoginForm(FlaskForm):
+    username= StringField("museumName", validators=[DataRequired()])
+    password= PasswordField("password", validators=[DataRequired()])
+    submit= SubmitField("Submit")
 
 class FT_Pictures(FlaskForm):
     author = StringField("inserire autore", validators=[DataRequired()])

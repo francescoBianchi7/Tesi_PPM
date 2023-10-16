@@ -29,54 +29,7 @@ window.hideLoading=function () {
     loader.classList.remove("display");
 }
 
-window.submitNewImg = function() {
-    var paintingname = document.getElementById("paintingName")
-    var author = document.getElementById("author")
-    var file = document.getElementById("shown_file")
-    const fileField = document.querySelector('input[type="file"]');
 
-    if (file.value === '' || author.value === '' || paintingname.value === '') {
-        console.log('not a valid submit')
-        window.alert('please insert a valid description')
-    } else {
-
-        let formData =new FormData()
-        formData.append("name",paintingname.value)
-        console.log("name",formData.get("name"))
-        formData.append("author",author.value)
-        console.log("author",formData.get("author"))
-        formData.append("file", fileField.files[0])
-        console.log("file",formData.get("file"))
-        console.log(fileField.files)
-        var len = document.getElementById('training_files').files.length;
-        console.log(len)
-        for (let i=0; i<len; i++){
-            let t="training"+i.toString()
-            console.log("tr to send",document.getElementById('training_files').files[i])
-            formData.append("training[]", document.getElementById('training_files').files[i]);
-            console.log("files", formData.get("training[]"))
-        }
-        for(const [key, value] of formData) {
-            console.log("all", key, value)
-        }
-        openNav()
-        // takes 2 argument an url or endpoint where to post or get data from
-        // and an init constructor,object full of instructions
-        fetch(`${Config.BASE_URL}/upload-img`, {
-            method: "POST",
-            body: formData
-            //headers: new Headers({
-            //    "content-type": "application/json"
-            //})
-        }).then(function () {
-            console.log(formData)
-            closeNav()
-            window.alert(formData.get("name")+"added to database")
-            author_list()
-            paints_by_author()
-        })
-    }
-}
 
 window.author_list=function (){
     fetch(`${Config.BASE_URL}/authors`, {
@@ -190,6 +143,43 @@ window.remove_options=function (element){
     }
 }
 
+window.get_paintings = function(){
+    fetch(`${Config.BASE_URL}/start_paints`, {
+        method: "GET",
+        credentials: "include", //cookies on the page
+        cache: "no-cache",
+        headers: new Headers({
+            "content-type": "application/json"
+        })
+    }).then(response=>response.json())
+        .then(json=>{
+            console.log("received", JSON.stringify(json))
+            let list=json.keys
+            for(const [key, value] of Object.entries(json)) {
+                console.log("AP", key, value)
+                var img_box = document.createElement('div')
+                img_box.className = 'grid-item'
+                img_box.dataset.name = key
+                var img = document.createElement('img')
+                var text = document.createElement("h6")
+                var caption=document.createElement('div')
+                caption.className='caption'
+                caption.innerText=key
+                text.textContent = key;
+                img.src = value;
+                //img.className="w-full h-64 object-cover img-fluid"
+                //img.style.filter='blur(15px)'
 
-
+                img_box.appendChild(img);
+                img_box.appendChild(caption);
+                document.querySelector(".grid-container").appendChild(img_box)
+            }
+            document.querySelectorAll(".grid-item").forEach(ib=>{
+                ib.addEventListener("click", e=>{
+                    changeSelection(ib,ib.dataset.name, ib.getElementsByTagName('img' )[0].src)
+                    })
+                })
+        })
+}
+document.addEventListener("DOMContentLoaded", get_paintings);
 document.addEventListener("DOMContentLoaded", author_list);

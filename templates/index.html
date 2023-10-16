@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>Task Master</title>
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Home</title>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'></link>
+</head>
 {% endblock %}
-<!DOCTYPE html>
-<html lang="en">
 <head>
 
     <meta charset="UTF-8">
@@ -13,68 +17,59 @@
     <title>Home</title>
 </head>
 <body >
-    {% block body %}
-        <div id="myNav" class="overlay" style="display: none">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <div class="overlay-content">
-                <h2>Welcome to the Game!!</h2>
-                <p>this is an example of the pop up window containing the description on how the game works</p>
-                <p>this is another paragraph describing what you can do after having played</p>
-                <p>click on the X when you are done reading to close this window</p>
+{% block body %}
+    <!--<div id="myNav" class="overlay" style="display: none">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="overlay-content">
+            <h2>Your image is being generated!!</h2>
+            <p>The process will take some time to complete</p>
+            <p>once finished you will be redirected to the image generated</p>
+            <p>click on the X when you are done reading to close this window</p>
+            <div id="loading"></div>
+        </div>
+    </div>-->
+    <div class="header">
+        <div class="title">
+            <h1>Test Your Memory</h1>
+        </div>
+        <div class="museum-info">
+            <div class="museum-name">
+                Museum Name
             </div>
         </div>
-        <div class="page-top d-flex align-items-center">
-
-        <div class="title-box d-inline-block">
-            <h1 class="title-text"> Test your Memory </h1>
-        </div>
-            <div class="instruction-box ml-auto mr-4">
-                <button class="instructions-btn" id="is-btn" style="font-size:30px;cursor:pointer" onclick="openNav()">
-                <span>Click for instructions</span>
-                </button>
+        <div class="placeholder-container" onclick="window.location.href='{{ url_for('userCollection') }}'">
+            <div class="placeholder-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" ><image href="/static/css/assets/bx_collection_icon.png" height="40" width="40" /></svg>
+            </div>
+            <div class="placeholder-number">
+                #123
             </div>
         </div>
-
-        <div class="painting_container">
-            <div class="container m-0" id="index-container">
-                <div class="top_container_block .container-fluid">
-                    <div class="text-box">
-                        <p id="selected_author">Selected painting</p>
-                        <h3 style="font-style:oblique;font-weight: bold">{{ paintingName }}</h3>
-                    </div>
-                    <div class="miniature-box">
-                        <img class="miniature " src="{{ path }}">
-                    </div>
-                </div>
-                    <div class="form_block mb-1 "  style="border-top: solid">
-                        <h3>Insert the image description that will be sent to AI:</h3>
-                        <label for="textbox" class="description_paragraph "></label>
-                        <textarea id="textbox" rows="6" name="image" placeholder="describe" required></textarea>
-                        <button class="submitButton" id="submit_btn" onclick="checksubmit()">Submit</button>
-                    </div>
-
-                <div class="form_block"  style="border-top: solid">
-                    <div class="header_container">
-                        <h1 class="center" style="color:black">generated image</h1>
-                        <p>generating your image </p>
-                    </div>
-                    <div class="img_container" style="border: 2px solid black;">
-                        <div class="img_block" id="img_block">
-                            <h2 id="AI_box_txt" style="display: none ; color: black">The AI is generating your image, please wait</h2>
-                             <div id="loading">
-                             </div>
-                        </div>
-                    </div>
+    </div>
+    <div class="game-container">
+        <div class="part top-part">
+            <!-- Text on the left side -->
+            <div class="text">
+                <p>Selected painting</p>
+                <h2>{{ paintingName }}</h2>
+            </div>
+            <div class="part">
+                <div class="image">
+                    <img src="{{ path }}">
                 </div>
             </div>
         </div>
-        <div class="footer">
-            <p>this will activate after the image is generated</p>
-            <div class="finish_btn_container">
-                <button class="startButton"
-                        id='endBtn' onClick="window.location.href='{{ url_for('final')}}';" disabled>Finish</button>
-            </div>
+
+        <div class="part bottom-part">
+            <div class="separator"></div>
+            <h3>Write a Description for the image you have chosen to recreate.</h3>
+                <!-- Text box and submit button -->
+            <textarea class="centered-textarea" id="textbox" rows="4" placeholder="Enter your text"></textarea>
+            <br>
+            <button type="submit" class="submitButton" id="submit_btn" onclick="checksubmit()">Submit</button>
         </div>
+    </div>
+
     {% endblock %}
 </body>
 {% block script %}

@@ -1,23 +1,19 @@
 import {Config} from "./config.js";
 
-const   search=document.querySelector(".search_box input"),
+const   search=document.querySelector(".search-bar"),
         images_block=document.querySelectorAll(".images"),
         imgs=document.querySelectorAll(".image-box > img"),
-        images=document.querySelectorAll(".image-box");
+        images=document.querySelectorAll(".grid-item");
 
 var selected, selectedpath, selectedbox;
 
-document.getElementById("temp_select").addEventListener("",e=>{
-    console.log("x", document.getElementById("is-btn").disabled)
-    document.getElementById("is-btn").disabled=false
-    console.log(document.getElementById("is-btn").isEnabled())
-})
+
 
 
 search.addEventListener("keyup", e=>{
     let searchValue=search.value,
         value=searchValue.toLowerCase();
-    document.querySelectorAll(".image-box").forEach(image=>{
+    document.querySelectorAll(".grid-item").forEach(image=>{
         console.log(image.dataset.name.toLowerCase());
         if(image.dataset.name.toLowerCase().includes(value)){
             return image.style.display="block";
@@ -52,6 +48,8 @@ window.submitSelected = function(name, path){
     }).then(function(response){
         console.log(entry)
         console.log(response.json())
+        window.location=window.location.origin+"/game"
+        //window.location="url_for('views.game')";
     })
 }
 
@@ -65,9 +63,6 @@ window.changeSelection=function (ib,name,path){
         ib.style.borderColor='red'
         console.log("you selected", selected);
         console.log("path is", selectedpath);
-        console.log("x", document.getElementById("is-btn").disabled)
-        document.getElementById("temp_select").textContent = selected
-        document.getElementById("is-btn").disabled = false
         submitSelected(name, path)
     }
 }
@@ -92,18 +87,23 @@ window.get_paintings = function(){
             for(const [key, value] of Object.entries(json)) {
                 console.log("AP", key, value)
                 var img_box = document.createElement('div')
-                img_box.className = 'image-box'
+                img_box.className = 'grid-item'
                 img_box.dataset.name = key
                 var img = document.createElement('img')
                 var text = document.createElement("h6")
+                var caption=document.createElement('div')
+                caption.className='caption'
+                caption.innerText=key
                 text.textContent = key;
                 img.src = value;
-                img.style.filter='blur(15px)'
+                //img.className="w-full h-64 object-cover img-fluid"
+                //img.style.filter='blur(15px)'
+
                 img_box.appendChild(img);
-                img_box.appendChild(text);
-                document.querySelector(".images").appendChild(img_box)
+                img_box.appendChild(caption);
+                document.querySelector(".grid-container").appendChild(img_box)
             }
-            document.querySelectorAll(".image-box").forEach(ib=>{
+            document.querySelectorAll(".grid-item").forEach(ib=>{
                 ib.addEventListener("click", e=>{
                     changeSelection(ib,ib.dataset.name, ib.getElementsByTagName('img' )[0].src)
                     })

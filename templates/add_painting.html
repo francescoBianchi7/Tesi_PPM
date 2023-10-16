@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block body %}
+
+            <div class="be_form_block">
+                <div class="shadow p-3 mb-5 bg-body rounded">
+                    <h3 style="color: red">Painting data to be saved for the users to access</h3>
+                    <h5 style="color: red">this section will also be used for AI training</h5>
+                    <label class="form-label">insert author</label>
+                    <input class="form-control" type="text" id="author" placeholder="author" required>
+                    <label>insert name</label>
+                    <input class="form-control" type="text" id="paintingName" placeholder="painting" required>
+                    <br/>
+                    <label>insert image that will be shown to users<h6 style="color: red"> *will also be used for
+                        training*</h6></label>
+                    <input class="form-control" type="file" id="shown_file">
+                    <br/>
+                    <div class="p-1 bg-dark w-50 center"></div>
+                    <h3 style="color: red">Training data</h3>
+                    <label>insert training files</label>
+                    <input class="form-control" type="file" id="training_files" multiple>
+                    <button class="btn_primary" onclick="submitNewImg()">Submit</button>
+                </div>
+            </div>
+
+
+{% endblock %}
+</body>
+{% block script %}
+    <script type="module"
+            src="{{ url_for('static',filename='js/back-end.js') }}"></script>
+{% endblock %}
+</html>

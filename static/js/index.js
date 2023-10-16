@@ -8,13 +8,16 @@ const loader = document.querySelector("#loading");
 /* Open */
 window.openNav=function() {
     console.log("clicked")
+    document.getElementById("myNav").style.height = "100%";
   document.getElementById("myNav").style.display = "block";
+  displayLoading()
 }
 
 /* Close */
 window.closeNav=function () {
   document.getElementById("myNav").style.display = "none";
 }
+
 let AI_image;
 window.displayLoading=function () {
     loader.classList.add("display");
@@ -22,13 +25,11 @@ window.displayLoading=function () {
     //let text=document.createElement('h2')
     //text.innerHTML="The AI is generating your image, please wait"
     //text.style.color='black'
-    document.getElementById('AI_box_txt').style.display='flex'
 }
 
 // hiding loading
 window.hideLoading=function () {
     loader.classList.remove("display");
-    document.getElementById('AI_box_txt').style.display='none'
 }
 
 
@@ -38,7 +39,6 @@ window.checksubmit=function () {
         console.log('insert valid description')
         window.alert('please insert a valid description')
     }else{
-        document.getElementById('submit_btn').disabled=true
         if(document.getElementById('AI_image')){
             document.getElementById('AI_image').src=''
         }
@@ -46,10 +46,27 @@ window.checksubmit=function () {
         var entry = {
             message: message.value
         };
-        displayLoading()
+
+        //openNav()
         // takes 2 argument an url or endpoint where to post or get data from
         // and an init constructor,object full of instructions
-        fetch(`${Config.BASE_URL}/generate`, {
+        fetch(`${Config.BASE_URL}/postDescription`,{
+            method: "POST",
+            credentials: "include", //cookies on the page
+            body: JSON.stringify(entry),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        }).then(function (response) {
+            console.log(response)
+            window.location=window.location.origin+"/loading"
+        })
+    }
+}
+
+
+/**fetch(`${Config.BASE_URL}/generate`, {
             method: "POST",
             credentials: "include", //cookies on the page
             body: JSON.stringify(entry),
@@ -65,27 +82,8 @@ window.checksubmit=function () {
             response.json().then(function (data) {
                 console.log("picture is", data)
                 hideLoading()
+                closeNav()
+                window.location=window.location.origin+"/result"
                 window.showOnscreen(data);
-                document.getElementById('submit_btn').disabled=false
             })
-        })
-    }
-}
-
-window.showOnscreen=function(data){
-    if(!document.getElementById('AI_image')) {
-        let image = document.createElement("img")
-        image.id = 'AI_image';
-        document.getElementById("img_block").appendChild(image);
-    }
-    document.getElementById('AI_image').src = data;
-    AI_image=data;
-    console.log(AI_image)
-    document.getElementById('AI_image')
-        .style.display = "block";
-    document.getElementById('AI_image')
-        .style.position= "center";
-    if(document.getElementById("AI_image").src!=='') {
-          document.getElementById('endBtn').disabled = false
-    }
-}
+        })**/

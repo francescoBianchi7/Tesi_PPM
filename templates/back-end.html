@@ -6,85 +6,42 @@
     <title>Title</title>
 </head>
 <body>
+
 {% block body %}
-
-    {% if psw %}
-        {% if operation=='Add Painting' %}
-            <div id="myNav" class="overlay" style="display: none">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <div class="overlay-content">
-            <div id="loading">
-                             </div>
-                <h2>Welcome to the Game!!</h2>
-                <p>this is an example of the pop up window containing the description on how the game works</p>
-                <p>this is another paragraph describing what you can do after having played</p>
-                <p>click on the X when you are done reading to close this window</p>
+     <div class="header">
+        <div class="title">
+            <h1>Test Your Memory</h1>
+        </div>
+        <div class="museum-info">
+            <div class="museum-name">
+                {{ museum}}
             </div>
         </div>
-            <div class="be_form_block">
-                <div class="shadow p-3 mb-5 bg-body rounded">
-                    <h3 style="color: red">Painting data to be saved for the users to access</h3>
-                    <h5 style="color: red">this section will also be used for AI training</h5>
-                    <label class="form-label">insert author</label>
-                    <input class="form-control" type="text" id="author" placeholder="author" required>
-                    <label>insert name</label>
-                    <input class="form-control" type="text" id="paintingName" placeholder="painting" required>
-                    <br/>
-                    <label>insert image that will be shown to users<h6 style="color: red"> *will also be used for
-                        training*</h6></label>
-                    <input class="form-control" type="file" id="shown_file">
-                    <br/>
-                    <div class="p-1 bg-dark w-50 center"></div>
-                    <h3 style="color: red">Training data</h3>
-                    <label>insert training files</label>
-                    <input class="form-control" type="file" id="training_files" multiple>
-                    <button class="btn_primary" onclick="submitNewImg()">Submit</button>
-                </div>
-            </div>
-        {% else %}
-
-            <div class="be_form_block">
-                <div class="shadow p-3 mb-5 bg-body rounded">
-                    <form>
-                        <h3 style="color:red; font-weight: bold">if no more paintings from that author are present
-                            the author will also be removed</h3>
-                        <select id="authors_list" onchange="paints_by_author()">
-                            <option value="empty"></option>
-                        </select>
-                        <select id="painting_list">
-                            <option value="empty"></option>
-                        </select>
-                        <button class="btn-secondary" onclick="deleteFile()">Submit</button>
-                    </form>
-                </div>
-            </div>
-        {% endif %}
-    {% else %}
-
-        <h1 style="color: wheat">Back end</h1>
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-        {% endfor %}
-        <br/>
-        <div class="be_form_block">
-            <div class="shadow p-3 mb-5 bg-body rounded">
-                <form method="POST">
-                    {{ form.hidden_tag() }}
-                    {{ form.psw.label }}
-                    {{ form.psw(class="form-control") }}
-                    {{ form.select_op.label }}
-                    {{ form.select_op(class="form-control") }}
-                    <br/>
-                    {{ form.submit }}
-                </form>
-            </div>
+    </div>
+    <div class="centered-content">
+        <div class="collection-title">
+            <h1>Collection Title</h1>
         </div>
-    {% endif %}
+        <div class="add-painting-link">
+            <h2><a href="{{url_for('add_painting')}}">+ Add Painting</a></h2>
+        </div>
+    </div>
+    <div class="collection-container">
+        <div class="collection-cell">
+            <img class="collectionimage" src="/static/images/Botticelli/Botticelli,Birth of Venus.jpg" alt="Image 1">
+            <div class="img-description">
+                <p>Description for Botticelli Birth of venus</p>
+            </div>
+            <input class="checkbox" type="checkbox">
+        </div>
+        <div class="collection-cell">
+            <img class="collectionimage" src="/static/images/Durer/Durer, Hare.jpg" alt="Image 1">
+            <div class="img-description">Description for Item 1</div>
+            <input class="checkbox" type="checkbox">
+        </div>
+
+        <!-- Add more cells as needed -->
+    </div>
 {% endblock %}
 </body>
 {% block script %}

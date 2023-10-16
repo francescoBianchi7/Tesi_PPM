@@ -5,7 +5,7 @@ import functools
 import tensorflow_hub as hub
 import numpy as np
 import tensorflow as tf
-from natsort import natsorted
+
 from glob import glob
 import os
 
@@ -37,7 +37,7 @@ def activate_generator(weights_dir):
 
 #@title Run for generating images.
 def generate(user_prompt, training_prompt, g_cuda, pipe):
-    prompt = "photo of ldv gioconda" #@param {type:"string"}
+    prompt = user_prompt #@param {type:"string"}
     negative_prompt = "painting of a woman looking straight on a swimming poll" #@param {type:"string"}
     num_samples = 1 #@param {type:"number"}
     guidance_scale = 5 #@param {type:"number"}
@@ -97,7 +97,7 @@ def style_transfer(original, generated): # original e generated sono path
     # fine generazione
     final_image = tensor_to_image(stylized_image)
     print("converted")
-    #final_image = final_image.save('finale.jpg')  # salva immagine come file, dovrò trovare il modo
+    final_image.save('finale.jpg')  # salva immagine come file, dovrò trovare il modo
     print("saved")
     # per salvarle in un path unico, e nel database
     # probabilmente verrà fatto solo una volta che l'utente switcha pagina

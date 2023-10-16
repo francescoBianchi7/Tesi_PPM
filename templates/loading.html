@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block head %}
+<title>Task Master</title>
+{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+{% block body %}
+<body>
+
+<div class="loading-container">
+    <h3>Generating your image, please wait a moment</h3>
+    <div class="loader"></div>
+</div>
+
+</body>
+{% endblock %}
+{% block script %}
+
+     <script type="module" src="{{ url_for('static',filename='js/loading.js')}}"></script>
+{% endblock %}
+</html>

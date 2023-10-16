@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Task Master</title>
+{% endblock %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block body %}
+<div class="header">
+        <div class="title">
+            <h1>Test Your Memory</h1>
+        </div>
+        <div class="museum-info">
+            <div class="museum-name">
+                Museum Name
+            </div>
+        </div>
+        <div class="placeholder-container">
+            <div class="placeholder-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" ><image href="/static/css/assets/bx_collection_icon.png" height="40" width="40" /></svg>
+            </div>
+            <div class="placeholder-number">
+                #123
+            </div>
+        </div>
+</div>
+    <div class="col align-content-center hero-headline flex flex-col items-center justify-center pt-24 text-center">
+        <p class="text-center" style="color: black"> Go back to select another painting to reproduce</p>
+        <div class="startBlock" >
+            <button class="button" id="is-btn" style="font-size:30px" onclick="window.location.href='{{ url_for('start') }}'">
+                <span>Click me</span>
+            </button>
+        </div>
+    </div>
+    <div class="content-container">
+<div class="description">
+    <h4>Your Creations</h4>
+</div>
+</div>
+        <div class="canvas-cell">
+            <canvas id="canvas1" class="canvas"></canvas>
+            <div class="canvas-description">
+                <h5>Botticelli, Birth of venus</h5>
+                <p>Thiis is the description of Botticelli birth of venus</p>
+                <a class="download-button" id="download" >
+                    <svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <image href="/static/css/assets/downlinearrow.png" height="24" width="24"></image>
+                    </svg>Download
+                </a>
+            </div>
+
+        </div>
+        <div class="cell">
+            <div class="canvas"></div>
+            <div class="description">Description for Cell 2</div>
+        </div>
+     <div class="container">
+        <div class="cell">
+            <div class="canvas"></div>
+            <div class="description">Description for Cell 3</div>
+        </div>
+     </div>
+
+{% endblock %}
+    {% block script %}
+<script type="module"
+        src="{{ url_for('static',filename='js/user-collection.js')}}"></script>
+{% endblock %}
+</body>
+</html>

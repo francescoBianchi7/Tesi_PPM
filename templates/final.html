@@ -1,54 +1,86 @@
 {% extends 'base.html' %}
 {% block head %}
-    <meta charset="UTF-8">
     <title>Title</title>
 {% endblock %}
-{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+</head>
 
 <body>
-<div class="page-top">
-        <div class="title-box" id="final-page-title">
-            <h1 class="title-text">Test Your Memory</h1>
-        </div>
-</div>
-<div class="painting_container">
-    <div class="container" id="comparison">
-        <div class="images" id="compare-box">
-            <div class="box-final flex-d">
-            <h6>AI IMAGE</h6>
-                <div class=" image-box-f " id="final_AI">
-                    <img src="{{AI_image}}"  class="img-center" style="object-fit: cover" id="zoomedImage" >
-                </div>
-            </div>
-            <div class="box-final flex-d ">
-                <h6>{{ original_name }}</h6>
-                <div class=" image-box-f" id="final_original">
-                    <img src="{{original_path}}"  class="img-center" style="object-fit: cover" id="zoomedImage1">
-                </div>
+{% block body %}
+<div id="myNav" class="overlay" >
+            <a href="" class="closebtn" onclick="closeNav()" >&times;</a>
+            <div class="overlay-content">
+                <h2>Botticell, Birth of venus</h2>
+                <p>this is an example of description of the painitng</p>
+                <p>you can access this by clicking on either of the paintings</p>
+                <p>click on the X when you are done reading to close this window</p>
             </div>
         </div>
-    </div>
-</div>
-<div class="footer cols-2 mt-5 align-content-center flex-row">
-    <div class="col">
-        <h1 class="text-center" style="color: wheat"> Go back to select another painting to reproduce</h1>
-        <div class="startBlock" >
-            <button class="startButton" id="is-btn" style="font-size:30px;position: center" onclick="window.location.href='{{ url_for('start') }}'">
-                <span>Click me</span>
-            </button>
+    <div class="header">
+        <div class="title">
+            <h1>Test Your Memory</h1>
+        </div>
+        <div class="museum-info">
+            <div class="museum-name">
+                Museum Name
+            </div>
+        </div>
+        <div class="placeholder-container" onclick="window.location.href='{{ url_for('userCollection') }}'">
+            <div class="placeholder-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" ><image href="/static/css/assets/bx_collection_icon.png" height="40" width="40" /></svg>
+            </div>
+            <div class="placeholder-number">
+                #123
+            </div>
         </div>
     </div>
-    <div class="col align-content-center">
-         <h1 class="text-center" style="color: wheat"> Go to vote page, and confront your creation with others</h1>
-        <div class="startBlock">
-            <button class="startButton"
-                        id='voteBtn'  style="font-size:30px;position: center"
-                    onClick="window.location.href='{{ url_for('vote', path=path, paintingName=paintingName)}}';">Vote</button>
+     <div class="image-container">
+    <div class="wrapper">
+        <div class="text-box-f">
+            Original
+        </div>
+        <div class="overlay-container" id="overlay">
+
+          <div class="content">
+              <div class="content-overlay"></div>
+              <img src="{{ original_path }}" class="imagesf" alt="Image 1">
+              <div class="content-details fadeIn-bottom">
+                  <div class="closebtn-div ">
+                        <a href="" class="closebtn d-flex justify-content-end" onclick="closeNav()" >&times;</a>
+                      </div>
+                <h3 class="content-title">Botticelli, Birth of Venus</h3>
+                  <p class="content-text">This is a placeholder description for Botticelli, Birth of Venus</p>
+
+              </div>
+          </div>
         </div>
     </div>
-</div>
-</body>
+        <div class="middle-part">
+            <h4 id="similarity-txt">similarity</h4>
+            <div class="chart-container">
+                <div class="bar" style="width: 80%;" id="similarity"></div> <!-- Adjust the width as needed -->
+            </div>
+        </div>
+        <div class="wrapper">
+            <div class="text-box-f">
+                Your image
+            </div>
+            <img src="{{ AI_image }}" class="imagesf" alt="Image 2">
+        </div>
+    </div>
+    <div class="buttons">
+            <a id="back-to-index" class="button" href="{{ url_for('game') }}">Go back</a>
+            <a id="finish creation" class="button" href="{{ url_for('userCollection') }}">Commit</a>
+        </div>
+
 {% endblock %}
+</body>
+
 {% block script %}
     <script type="module" src="{{ url_for('static',filename='js/index.js')}}"></script>
      <script type="module" src="{{ url_for('static',filename='js/final.js')}}"></script>

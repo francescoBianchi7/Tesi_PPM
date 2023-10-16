@@ -1,7 +1,6 @@
 {% extends "base.html"%}
-<body>
+
 {% block head %}
-    <title>Title</title>
     <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
@@ -10,43 +9,44 @@
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'></link>
 </head>
 {% endblock %}
+<body class="bg-white">
 {% block body %}
-   <div class="page-top d-flex align-items-center">
-        <div class="title-box d-inline-block">
-            <h1 class="title-text"> Test Your Memory </h1>
+     <div class="header">
+        <div class="title">
+            <h1>Test Your Memory</h1>
         </div>
-       <div class="instruction-box ml-auto mr-4">
-           <button class="instructions-btn"  style="font-size:30px;cursor:pointer" onclick="window.location.href='{{ url_for('back_end') }}'">
-               <span>Back End</span>
-           </button>
-       </div>
-   </div>
-        <div id="remove" class="description_block start_borders">
-            <h2>WELCOME</h2>
-            <h3>Test your memory</h3>
-            <h3>Try to recreate a painting by describing it to an AI and see what it creates
-            </h3>
-            <br>
-            <h5 style="font-weight: bold">NOTE:*the AI will not generate a perfect copy of the original *</h5>
-
-        </div>
-   <div class="painting_container">
-        <div class="container">
-            <h4>Please select the painting you want to test your memory on</h4>
-            <div class="aut_select">
-                <div class="search_box">
-                    <i class="bx bx-search"></i>
-                    <input type="text" placeholder="search the painting">
-                </div>
-                <h5 id="temp_select">selected: {{ selectedPainting }}</h5>
-                <button class="startButton" id="is-btn" style="font-size:30px; position: center"
-                         onclick="window.location.href='{{ url_for('game') }}'" disabled>Start</button>
-                <div class="images">
-
-                </div>
+        <div class="museum-info">
+            <div class="museum-name">
+                Museum Name
             </div>
         </div>
-   </div>
+        <div class="placeholder-container" onclick="window.location.href='{{ url_for('userCollection') }}'">
+            <div class="placeholder-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" ><image href="/static/css/assets/bx_collection_icon.png" height="40" width="40" /></svg>
+            </div>
+            <div class="placeholder-number">
+                #123
+            </div>
+        </div>
+    </div>
+<div class="content-container">
+<div class="description">
+    <h2>Welcome to Test your Memory</h2>
+    <h4>Try to recreate a painting by describing it to an AI and see what it creates.</h4>
+</div>
+</div>
+        <div class="container">
+            <h5>Select the image you want to recreate:</h5>
+            <div class="input-box">
+                <i class="uil uil-search"></i>
+                <input class="search-bar" type="text" placeholder="Search here..." />
+
+            </div>
+            <div class="grid-container">
+
+            </div>
+        </div>
+</div>
 {% endblock %}
 {% block script %}
 <script type="module"
