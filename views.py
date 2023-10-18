@@ -10,7 +10,7 @@ from wtforms.validators import DataRequired
 
 import back_end as be
 # import AI_train
-import AI as AI
+
 # setup
 import database
 from database import app, db
@@ -203,39 +203,18 @@ def loading():
 def generate():
     prompt = session.get('description', None)
     print(prompt)
-    global model
-    if model is None:
-        author = session.get("author", None)
-        # t = Finetuning.query.filter_by(author=author).first()
-        g_cuda, pipe = AI.activate_generator("content/stable_diffusion_weights/Finetuning_venere/800")
-        print("pipe", pipe)
-        print("cuda", g_cuda)
-    print('starting generation')
     user_prompt = prompt
     training_prompt = ""
-    images = AI.generate(user_prompt, training_prompt, g_cuda, pipe)
-    print("created path is", images)
-    print("created path is", images[0])
     print(session.get('name'))
     print(session.get('path'))
-    im = AI.PIL.Image.open("generated_image.jpg")
-    im = AI.PIL.Image.open("static/images/Botticelli/Botticelli,Birth of Venus.jpg")
-    print("xx", im)
     # original_p = Painting_temp.query.filter_by(painting=session.get('name')).first()
-    final = AI.style_transfer("static/images/Botticelli/Botticelli,Birth of Venus.jpg",
-                              "generated_image.jpg")
-    print("final image", final)
 
-    im = AI.PIL.Image.open("finale.jpg")
+    print("final image", final)
     # same_paint = Created_Imgs.query.filter_by(original=original_p.path).all()
-    created_path = AI.commit_image(final, created_images_dir, "Botticelli, Venere", 1)
     # l = len(same_paint)+1
     painting_path = created_images_dir + "Botticelli, Venere1.jpg"
     session['AI_image'] = painting_path  # keeps the image in memory for all the duration of the session
-    # session['AI_image'] = images[0]
-    print("created path is", images[0])
-    # response = jsonify(images[0])
-    response = jsonify(created_path)  # sends back generated image
+    response="200" # sends back generated image
     return response
 
 

@@ -14,9 +14,16 @@ window.downloadFile=function() {
         document.getElementById()
          window.open()
       }
-
+window.backToGenerate=function (){
+    window.location=window.location.origin+"/game"
+}
+window.toUserCollection=function (){
+    window.location=window.location.origin+"/userCollection"
+}
 // script.js
 // script.js
+document.getElementById('back-to-index').addEventListener('click',backToGenerate)
+document.getElementById('finish creation').addEventListener('click',toUserCollection)
 
 var similarityScore = 15; // Example similarity score (0 to 100)
 

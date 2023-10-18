@@ -18,7 +18,7 @@ migrate = Migrate(app, db)
 #FLASK LOGIN STUFF
 login_manager=LoginManager()
 login_manager.init_app(app)
-login_manager.login_view='login'
+login_manager.login_view= 'login'
 
 @login_manager.user_loader
 def load_museum(museum_id):
@@ -34,6 +34,7 @@ class Museums(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
 
     #poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
     @property
     def password(self):
         raise AttributeError('password is not a readable attribute')
@@ -67,7 +68,6 @@ class Painting_temp(db.Model):
 class Paintings(db.Model):
     id = db.Column(db.Integer, nullable=False)
     path = db.Column(db.String(200), primary_key=True)
-    aut = db.Column(db.String(100), nullable=False)
     painting = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):

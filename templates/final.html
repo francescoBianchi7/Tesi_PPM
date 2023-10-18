@@ -74,9 +74,13 @@
         </div>
     </div>
     <div class="buttons">
-            <a id="back-to-index" class="button" href="{{ url_for('game') }}">Go back</a>
-            <a id="finish creation" class="button" href="{{ url_for('userCollection') }}">Commit</a>
-        </div>
+            <button id="back-to-index" class="button" onclick="backToGenerate()">
+              Generate Again
+            </button>
+    <button id="finish creation" class="button" onclick=window.location.href="'{{url_for('userCollection')}}'">
+               Finish Generation
+            </button>
+    </div>
 
 {% endblock %}
 </body>
