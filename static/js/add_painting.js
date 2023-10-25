@@ -1,4 +1,4 @@
-import {Config} from "./config";
+import {Config} from "./config.js";
 
 window.submitNewImg = function() {
     var paintingname = document.getElementById("paintingName")
@@ -42,38 +42,8 @@ window.submitNewImg = function() {
         }).then(function () {
             console.log(formData)
             window.alert(formData.get("name")+"added to database")
-            author_list()
-            paints_by_author()
+
         })
     }
 }
 
-window.paints_by_author=function () {
-    var selected = document.getElementById("authors_list");
-    if (selected.value === 'empty') {
-        remove_options(document.getElementById("painting_list"))
-        document.getElementById("painting_list").value = 'empty'
-    }
-}
-window.author_list=function (){
-    fetch(`${Config.BASE_URL}/authors`, {
-        method: "GET",
-        credentials: "include", //cookies on the page
-        cache: "no-cache",
-        headers: new Headers({
-            "content-type": "application/json"
-        })
-    }).then(response=>response.json())
-        .then(json=>{
-            console.log("received", JSON.stringify(json))
-            let element=document.getElementById("authors_list")
-            remove_options(element)
-            for(const i in json) {
-                console.log("f", json[i])
-                let option = document.createElement("option")
-                option.value = json[i]
-                option.innerText = json[i]
-                document.getElementById("authors_list").appendChild(option)
-            }
-        })
-}

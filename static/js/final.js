@@ -2,18 +2,8 @@ import { Config } from "./config.js";
 console.log("final load")
 
 
-window.setimage=function (){
-    let temp=document.getElementById("zoomedImage")
-    console.log(AI_image)
-    temp.src=AI_image
-    document.getElementById('zoomedImage')
-            .style.display = "block";
-}
 
-window.downloadFile=function() {
-        document.getElementById()
-         window.open()
-      }
+
 window.backToGenerate=function (){
     window.location=window.location.origin+"/game"
 }

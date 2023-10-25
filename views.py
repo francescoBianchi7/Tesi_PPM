@@ -4,9 +4,6 @@ from database import Flask
 from flask import Blueprint, render_template, request, jsonify, redirect, \
     url_for, flash, make_response, session
 
-from wtforms import Form, TextAreaField, \
-    validators, StringField, SubmitField, SelectField
-from wtforms.validators import DataRequired
 
 import back_end as be
 # import AI_train
@@ -25,6 +22,7 @@ AI_image = ''
 # db model temp class
 
 with app.app_context():
+    #db.drop_all()
     db.create_all()
 
 """avvio"""
@@ -40,6 +38,13 @@ with app.app_context():
 # def Ai_start():
 # session["hub_model"] = AI.start_AI()
 # print(session["hub_model"])
+@app.route("/test", methods=['GET', 'POST'])
+def test():
+    our_paints = database.Paintings.query.order_by(database.Museums.date_added)
+    our_collection = database.Collection.query.order_by(database.Museums.date_added)
+    our_museums = database.Museums.query.order_by(database.Museums.date_added)
+
+    return render_template('test.html', our_users=our_museums, collections=our_collection, paints=our_paints,)
 
 @app.route('/museum/add', methods=['GET', 'POST'])
 def add_museum():
@@ -50,7 +55,7 @@ def add_museum():
         museum = database.Museums.query.filter_by(museum=form.museum.data).first()
         if museum is None:
             hashed_pw = database.generate_password_hash(form.password_hash.data, "sha256")
-            museum = database.Museums(museum=form.museum.data, username=form.username.data, collection=None,
+            museum = database.Museums(museum=form.museum.data, username=form.username.data,
                                       password_hash=hashed_pw)
             db.session.add(museum)
             db.session.commit()
@@ -60,6 +65,8 @@ def add_museum():
     our_museums = database.Museums.query.order_by(database.Museums.date_added)
     return render_template('add_museum.html', form=form, name=museum, username=username,
                            our_users=our_museums)
+
+
 
 @app.route('/logout', methods=["GET", "POST"])
 @database.login_required
@@ -90,21 +97,80 @@ def login():
 @database.login_required
 def back_end():
     museum = database.Museums.query.filter_by(username=database.current_user.username).first()
-    museum_name=museum.museum
+    museum_name = museum.museum
     print(museum_name)
-    pic = None
-    operation = None
-    picForm = be.FT_Pictures()
-    tempForm = be.temp_add_Pictures
     # Validate Form
-    return render_template("back-end.html",
-                   pic=pic, picForm=picForm, operation=operation, museum_name=museum_name)
-@app.route("/add_painting", methods=["GET", "POST"])
+    return render_template("back-end.html", museum_name=museum_name)
+
+@app.route("/back_end/add_painting", methods=["GET", "POST"])
 @database.login_required
 def add_painting():
+    museum_collections = database.Collection.query.filter_by(museum=database.current_user.username).all()
+    active_collection = database.Collection.query.order_by(database.Collection.date_added).first()
+    print(database.Paintings.query.order_by(database.Paintings.id).all())
+    form = be.AddPicturesForm()
+    if form.validate_on_submit():
+        f = form.saved_pic
+        paintings = database.Paintings.query.filter_by(collection=active_collection.collection_name).all()
+        full_path, shown_name = be.upload_painting(active_collection.collection_name, form.author, form.name, f)
+        painting = database.Paintings(id=len(paintings), path=full_path, painting_name=shown_name,
+                                      description=form.description.data, collection=active_collection.id)
+        db.session.add(painting)
+        db.session.commit()
+        return redirect(url_for('back_end'))
+    return render_template('add_painting.html', form=form, collection=active_collection)
 
-    return render_template('add_painting.html')
+@app.route("/back_end/get_collections", methods=["GET"])
+def get_collections():
+    museum_collections = database.Collection.query.filter_by(museum=database.current_user.username).all()
+    collection_names = []
+    print(museum_collections[0].collection_name)
+    for i in range(len(museum_collections)):
+        print('xd',museum_collections[i].collection_name)
+        collection_names.append(museum_collections[i].collection_name)
+    response = jsonify(collection_names)
+    return response
+@app.route('/back_end/add_collection', methods=['GET', 'POST'])
+@database.login_required
+def add_collection():
+    collection = None
+    path = None
+    museum = None
+    form = be.AddCollectionForm()
+    if form.validate_on_submit():
+        collection_name = database.Collection.query.filter_by(museum=form.collection_name.data).first()
+        if collection_name is None:
+            path = be.imgdir+form.collection_name.data
+            collection = database.Collection(museum=database.current_user.username, collection_name=form.collection_name
+                                             .data, collection_path=path,)
+            db.session.add(collection)
+            db.session.commit()
+        else:
+            flash("Collection already exist- Try Again!")
+        form.collection_name.data = ''
+    flash("collection added successfully")
+    our_collection = database.Collection.query.order_by(database.Collection.date_added)
+    return render_template('add_collection.html', form=form, name=collection,
+                           our_users=our_collection)
 
+@app.route("/back_end/get_paints_by_collection", methods=['POST', 'GET'])
+def get_paintings_of_author():
+    selected_collection = request.get_json()
+    print(selected_collection)
+    d = {}
+    collection = database.Collection.query.filter_by(collection_name=selected_collection).first()
+    print(collection)
+    collection_paints = collection.collection_path + "/"
+    print("test",collection_paints)
+    paints = database.Paintings.query.filter_by(collection=selected_collection).all()
+    for i in os.listdir(collection_paints):
+        p = database.Paintings.query.filter_by(path=collection_paints+i).first()
+        print(p)
+        v= { 'path':p.path, 'description':p.description}
+        d[p.painting_name] = v
+        print(d)
+    response = jsonify(d)
+    return response
 @app.route("/upload-img", methods=["POST", "GET"])
 def upload_img():
     print("called")
@@ -134,8 +200,6 @@ def start():
     # print(AI.torch.version.cuda)
     # add_new_created_img(p.path)
     # fill()
-    db.session.query(database.Painting_temp).delete()
-    db.session.commit()
 
     return render_template('start.html', selectedPainting=painting)
 
@@ -360,29 +424,6 @@ def fill():
                 id += 1
     db.session.commit()
 
-
-@app.route("/authors", methods=['POST', 'GET'])
-def get_all_authors():
-    d = []
-    for i in FOLDER_LIST:
-        print(i)
-        d.append(i)
-    print(d)
-    response = jsonify(d)
-    return response
-
-
-@app.route("/get_paints_by_author", methods=['POST', 'GET'])
-def get_paintings_of_author():
-    author = request.get_json()
-    print(author)
-    d = []
-    author_paints = be.imgdir + str(author) + "/"
-    for i in os.listdir(author_paints):
-        d.append(i)
-    print(d)
-    response = jsonify(d)
-    return response
 
 
 @app.route("/remove_painting", methods=['POST', 'GET'])

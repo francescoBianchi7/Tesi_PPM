@@ -30,38 +30,20 @@ window.hideLoading=function () {
 }
 
 
-
-window.author_list=function (){
-    fetch(`${Config.BASE_URL}/authors`, {
-        method: "GET",
-        credentials: "include", //cookies on the page
-        cache: "no-cache",
-        headers: new Headers({
-            "content-type": "application/json"
-        })
-    }).then(response=>response.json())
-        .then(json=>{
-            console.log("received", JSON.stringify(json))
-            let element=document.getElementById("authors_list")
-            remove_options(element)
-            for(const i in json) {
-                console.log("f", json[i])
-                let option = document.createElement("option")
-                option.value = json[i]
-                option.innerText = json[i]
-                document.getElementById("authors_list").appendChild(option)
-            }
-        })
+window.getSelectedCollection=function (){
+    let opt=document.getElementById('collection_list')
+    return opt.value
 }
 
-window.paints_by_author=function (){
-    var selected = document.getElementById("authors_list");
+window.paints_by_collection=function (){
+    let selected = document.getElementById("collection_list");
     if(selected.value==='empty'){
-        remove_options(document.getElementById("painting_list"))
-        document.getElementById("painting_list").value='empty'
+        console.log('no value')
+     //  remove_options(document.getElementById("painting_list"))
+       // document.getElementById("painting_list").value='empty'
     }
     else {
-        fetch(`${Config.BASE_URL}/get_paints_by_author`, {
+        fetch(`${Config.BASE_URL}/back_end/get_paints_by_collection`, {
             method: "POST",
             credentials: "include", //cookies on the page
             body: JSON.stringify(selected.value),
@@ -69,28 +51,49 @@ window.paints_by_author=function (){
             headers: new Headers({
                 "content-type": "application/json"
             })
-        }).then(function (response) {
-            if (response.status !== 200) {
-                console.log('response was not 200: ${response.status}')
-                return;
-            }
-            response.json().then(function (data) {
-                console.log("paints", data)
-                var x = document.getElementById("painting_list")
-                let element = document.getElementById("painting_list");
-                remove_options(element)
-                for (const i in data) {
-                    let option = document.createElement("option")
-                    console.log("x", data[i])
-                    option.value = data[i]
-                    console.log("x1", option.value)
-                    option.innerText = data[i]
-                    console.log("x2", option.innerText)
-                    document.getElementById("painting_list").appendChild(option)
+        }).then(response=>response.json())
+            .then(json=>{
+                console.log("received", JSON.stringify(json))
+                let list=json.keys
+
+                for(const [key, value] of Object.entries(json)) {
+                    console.log("AP", key, value)
+                    console.log(value.description)
+                    console.log(value.path)
+                    var img_box = document.createElement('div')
+                    var caption=document.createElement('div')
+                    img_box.className = 'grid-item'
+                    var img = document.createElement('img')
+                    var text = document.createElement("h6")
+                    caption.className='caption'
+                    text.textContent = key;
+                    caption.appendChild(text)
+                    img.className='collectionimage'
+                    img.src = value.path;
+                    img_box.appendChild(img);
+                    img_box.appendChild(caption);
+
+                    var description_box= document.createElement('div')
+                    description_box.className='img-description'
+                    var img_description= document.createElement('p')
+                    img_description.innerText=value.description
+                    img_description.textContent=value.description
+                    description_box.appendChild(img_description)
+
+                    var checkbox=document.createElement('input')
+                    checkbox.type='checkbox'
+                    checkbox.className='checkbox'
+
+                    var cell = document.createElement('div')
+                    cell.className='collection-cell'
+                    cell.appendChild(img_box)
+                    cell.appendChild(description_box)
+                    cell.appendChild(checkbox)
+                    console.log(cell)
+                    document.getElementById('be-container').appendChild(cell)
 
                 }
             })
-        })
     }
 }
 
@@ -143,8 +146,9 @@ window.remove_options=function (element){
     }
 }
 
-window.get_paintings = function(){
-    fetch(`${Config.BASE_URL}/start_paints`, {
+
+window.collection_list=function (){
+    fetch(`${Config.BASE_URL}/back_end/get_collections`, {
         method: "GET",
         credentials: "include", //cookies on the page
         cache: "no-cache",
@@ -154,32 +158,21 @@ window.get_paintings = function(){
     }).then(response=>response.json())
         .then(json=>{
             console.log("received", JSON.stringify(json))
-            let list=json.keys
-            for(const [key, value] of Object.entries(json)) {
-                console.log("AP", key, value)
-                var img_box = document.createElement('div')
-                img_box.className = 'grid-item'
-                img_box.dataset.name = key
-                var img = document.createElement('img')
-                var text = document.createElement("h6")
-                var caption=document.createElement('div')
-                caption.className='caption'
-                caption.innerText=key
-                text.textContent = key;
-                img.src = value;
-                //img.className="w-full h-64 object-cover img-fluid"
-                //img.style.filter='blur(15px)'
-
-                img_box.appendChild(img);
-                img_box.appendChild(caption);
-                document.querySelector(".grid-container").appendChild(img_box)
+            let list=document.getElementById("collection_list")
+            let empty= document.createElement('option')
+            empty.value=''
+            empty.innerHTML=''
+            list.appendChild(empty)
+            for(const i in json) {
+                console.log("f", json[i])
+                let option = document.createElement("option")
+                option.value = json[i]
+                option.innerText = json[i]
+                list.appendChild(option)
             }
-            document.querySelectorAll(".grid-item").forEach(ib=>{
-                ib.addEventListener("click", e=>{
-                    changeSelection(ib,ib.dataset.name, ib.getElementsByTagName('img' )[0].src)
-                    })
-                })
         })
 }
-document.addEventListener("DOMContentLoaded", get_paintings);
-document.addEventListener("DOMContentLoaded", author_list);
+
+
+document.addEventListener("DOMContentLoaded", collection_list);
+

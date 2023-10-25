@@ -12,32 +12,6 @@
 
 <body>
 {% block body %}
-<div id="myNav" class="overlay" >
-            <a href="" class="closebtn" onclick="closeNav()" >&times;</a>
-            <div class="overlay-content">
-                <h2>Botticell, Birth of venus</h2>
-                <p>this is an example of description of the painitng</p>
-                <p>you can access this by clicking on either of the paintings</p>
-                <p>click on the X when you are done reading to close this window</p>
-            </div>
-        </div>
-    <div class="header">
-        <div class="title">
-            <h1>Test Your Memory</h1>
-        </div>
-        <div class="museum-info">
-            <div class="museum-name">
-                Museum Name
-            </div>
-        </div>
-        <div class="placeholder-container" onclick="window.location.href='{{ url_for('userCollection') }}'">
-            <div class="placeholder-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" ><image href="/static/css/assets/bx_collection_icon.png" height="40" width="40" /></svg>
-            </div>
-            <div class="placeholder-number">
-                #123
-            </div>
-        </div>
     </div>
      <div class="image-container">
     <div class="wrapper">
@@ -45,17 +19,15 @@
             Original
         </div>
         <div class="overlay-container" id="overlay">
-
           <div class="content">
               <div class="content-overlay"></div>
               <img src="{{ original_path }}" class="imagesf" alt="Image 1">
               <div class="content-details fadeIn-bottom">
-                  <div class="closebtn-div ">
-                        <a href="" class="closebtn d-flex justify-content-end" onclick="closeNav()" >&times;</a>
-                      </div>
-                <h3 class="content-title">Botticelli, Birth of Venus</h3>
-                  <p class="content-text">This is a placeholder description for Botticelli, Birth of Venus</p>
 
+                        <a href="" class="closebtn d-flex justify-content-end"  >&times;</a>
+
+                  <h3 class="content-title">Botticelli, Birth of Venus</h3>
+                  <p class="content-text">This is a placeholder description for Botticelli, Birth of Venus</p>
               </div>
           </div>
         </div>

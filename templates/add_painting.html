@@ -7,33 +7,38 @@
 </head>
 <body>
 {% block body %}
+    <h1 style="text-align: center">Fill the Form to add new Painting</h1>
+    <br/>
 
-            <div class="be_form_block">
-                <div class="shadow p-3 mb-5 bg-body rounded">
-                    <h3 style="color: red">Painting data to be saved for the users to access</h3>
-                    <h5 style="color: red">this section will also be used for AI training</h5>
-                    <label class="form-label">insert author</label>
-                    <input class="form-control" type="text" id="author" placeholder="author" required>
-                    <label>insert name</label>
-                    <input class="form-control" type="text" id="paintingName" placeholder="painting" required>
-                    <br/>
-                    <label>insert image that will be shown to users<h6 style="color: red"> *will also be used for
-                        training*</h6></label>
-                    <input class="form-control" type="file" id="shown_file">
-                    <br/>
-                    <div class="p-1 bg-dark w-50 center"></div>
-                    <h3 style="color: red">Training data</h3>
-                    <label>insert training files</label>
-                    <input class="form-control" type="file" id="training_files" multiple>
-                    <button class="btn_primary" onclick="submitNewImg()">Submit</button>
-                </div>
-            </div>
+    <div class="be_form_block d-flex justify-content-center">
+        <div class="shadow p-3 mb-5 bg-body rounded w-75 ">
+            <h3>it will be added to {{collection.collection_name }}</h3>
+            <form method="POST" enctype="multipart/form-data">
 
+                {{ form.hidden_tag() }}
+                {{ form.author.label(class='form-label') }}
+                {{ form.author(class='form-control')}}
+                <br/>
+                {{ form.name.label(class='form-label') }}
+                {{ form.name(class='form-control', rows='3')}}
+                <br/>
+                {{ form.saved_pic.label(class='form-label') }}
+                {{ form.saved_pic(class='form-control')}}
+
+                <br/>
+                {{ form.description.label(class='form-label') }}
+                {{ form.description(class='form-control')}}
+                <br/>
+                {{ form.submit(class='btn btn-secondary') }}
+
+            </form>
+        </div>
+    </div>
 
 {% endblock %}
 </body>
 {% block script %}
     <script type="module"
-            src="{{ url_for('static',filename='js/back-end.js') }}"></script>
+            src="{{ url_for('static',filename='js/add_painting.js') }}"></script>
 {% endblock %}
 </html>

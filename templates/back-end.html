@@ -17,28 +17,38 @@
                 {{ museum}}
             </div>
         </div>
-    </div>
+     </div>
+    <a href="{{ url_for('add_collection')}}">+ add new collection</a>
     <div class="centered-content">
+
         <div class="collection-title">
+            <select id="collection_list" class="form_control" onchange=paints_by_collection()></select>
             <h1>Collection Title</h1>
         </div>
         <div class="add-painting-link">
-            <h2><a href="{{url_for('add_painting')}}">+ Add Painting</a></h2>
+            <h2><a href="{{url_for('add_painting', collection=getSelectedCollection)}}">+Add Painting</a></h2>
         </div>
     </div>
-    <div class="collection-container">
+    <div class="collection-container" id="be-container">
         <div class="collection-cell">
-            <img class="collectionimage" src="/static/images/Botticelli/Botticelli,Birth of Venus.jpg" alt="Image 1">
+            <div class="grid-item">
+                <img class="collectionimage" src="/static/images/Botticelli/Botticelli,Birth of Venus.jpg" alt="Image 1">
+                <div class="caption">
+                    <h6>Birth of Venus</h6>
+                </div>
+            </div>
             <div class="img-description">
                 <p>Description for Botticelli Birth of venus</p>
             </div>
             <input class="checkbox" type="checkbox">
         </div>
         <div class="collection-cell">
-            <img class="collectionimage" src="/static/images/Durer/Durer, Hare.jpg" alt="Image 1">
-            <div class="img-description">Description for Item 1</div>
-            <input class="checkbox" type="checkbox">
-        </div>
+            <div class="grid-item">
+                <img class="collectionimage" src="/static/images/MyFirstCollection/Hare.jpg" alt="Image 1">
+                <div class="caption">
+                    <h6>Hare</h6>
+                </div>
+            </div>
 
         <!-- Add more cells as needed -->
     </div>
