@@ -12,7 +12,7 @@ app.config['SECRET_KEY'] = 'your secret key'
 #postgres://tesi_bianchi_user:aA5FNkIE6xmcCzO6c8wT8BWnt2t0ZxuS@dpg-ck4qm6l8ggls739oato0-a.frankfurt-postgres.render.com/tesi_bianchi
 # add Db
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///images.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://tesi_bianchi_user:aA5FNkIE6xmcCzO6c8wT8BWnt2t0ZxuS@dpg-ck4qm6l8ggls739oato0-a.frankfurt-postgres.render.com/tesi_bianchi'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tesi_bianchi_user:aA5FNkIE6xmcCzO6c8wT8BWnt2t0ZxuS@dpg-ck4qm6l8ggls739oato0-a.frankfurt-postgres.render.com/tesi_bianchi'
 
 # init DB
 db = SQLAlchemy(app)
@@ -54,7 +54,7 @@ class Museums(db.Model, UserMixin):
 class Collection(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     collection_name = db.Column(db.String(200), nullable=False)
-    museum = db.Column(db.Integer, db.ForeignKey('museums.username'))
+    museum = db.Column(db.String(20), db.ForeignKey('museums.username'))
     collection_path = db.Column(db.String(200), unique=True)
     # Collections Have Many Paintings
     paintings = db.relationship('Paintings', backref='paintings')

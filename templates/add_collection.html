@@ -7,28 +7,35 @@
 </head>
 <body>
 {% block body %}
-   {% for message in get_flashed_messages() %}
+<div class="title">
+            <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
+            <h5>Test Your Memory</h5>
 
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
+        </div>
+    <div class="small-button d-flex ">
+    <a href="{{ url_for("back_end") }}" >
+                <span>Back-end main page</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" >
+                    <image href="/static/css/assets/back-arrowlogo.png" height="40" width="40" />
+                </svg>
+    </a>
+    </div>
 
+    <div class="content-container">
+        <div class="description">
+            <h2>Add a Collection!</h2>
+            <h4 style="color: #707070">insert the name of the collection you want to add</h4>
+            <h4 style="color: #707070"> below there is a list of created collections</h4>
+        </div>
+    </div>
 
-{% endfor %}
-
-	<h1>Add New Collections!!</h1>
-	<br/><br/>
-    <a href="{{ url_for('back_end') }}">go to back_end main page</a>
-    <br/>
-    <div class="shadow p-3 mb-5  bg-body rounded ">
+    <div class="border border-secondary p-3 bg-body rounded m-3">
         <form method="POST">
         {{ form.hidden_tag() }}
         {{ form.collection_name.label(class='form-label') }}
         {{ form.collection_name(class='form-control')}}
         <br/>
-
-        {{ form.submit(class='btn btn-secondary') }}
+        {{ form.submit(class='submitButton w-25 ') }}
 
         <br/>
         </form>
@@ -38,7 +45,7 @@
 
     {% for our_user in our_users %}
 	<tr>
-	<td>{{ our_user.id }}. <a href="">{{ our_user.collection_name}}</a>--path:{{ our_user.collection_path }}--
+	<td>{{ our_user.id }}. {{ our_user.collection_name}}--path:{{ our_user.collection_path }}--
 	museum: {{ our_user.museum }} -
 	<a href="{{ url_for('delete', id=our_user.id)}}">Delete</a></td>
 	</tr>

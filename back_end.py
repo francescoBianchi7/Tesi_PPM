@@ -31,19 +31,19 @@ class MuseumForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class LoginForm(FlaskForm):
-    username = StringField("museumName", validators=[DataRequired()])
+    username = StringField("museum username", validators=[DataRequired()])
     password = PasswordField("password", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
 class AddPicturesForm(FlaskForm):
-    author = StringField("insert author", validators=[DataRequired()])
-    name = StringField("insert name", validators=[DataRequired()])
+    author = StringField("Insert author", validators=[DataRequired()])
+    name = StringField("Insert name", validators=[DataRequired()])
     saved_pic = FileField("Picture that will be shown to users", validators=[DataRequired()])
-    description = TextAreaField('insert a brief description of the painting', validators=[DataRequired()])
+    description = TextAreaField('Insert a brief description of the painting', validators=[DataRequired()])
     submit = SubmitField("Submit")
 
 class AddCollectionForm(FlaskForm):
-    collection_name = StringField('insert_name of collection')
+    collection_name = StringField('Insert name of collection')
     submit = SubmitField('Submit')
 
 def upload_painting(collection,author, name, file):

@@ -168,6 +168,7 @@ window.collection_list=function (){
                 let option = document.createElement("option")
                 option.value = json[i]
                 option.innerText = json[i]
+                option.style.width="100%"
                 list.appendChild(option)
             }
         })

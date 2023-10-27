@@ -30,11 +30,12 @@
     </div>-->
     <div class="header">
         <div class="title">
-            <h1>Test Your Memory</h1>
+            <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
+            <h5>Test Your Memory</h5>
         </div>
         <div class="museum-info">
             <div class="museum-name">
-                Museum Name
+                <h4 style="color: #707070">{{ museum }}</h4>
             </div>
         </div>
         <div class="placeholder-container" onclick="window.location.href='{{ url_for('userCollection') }}'">
@@ -46,12 +47,13 @@
             </div>
         </div>
     </div>
+    <a href="{{ url_for("start") }}" class="small-button"><span>Back to selection</span></a>
     <div class="game-container">
         <div class="part top-part">
             <!-- Text on the left side -->
             <div class="text">
                 <p>Selected painting</p>
-                <h2>{{ paintingName }}</h2>
+                <h4>{{ paintingName }}</h4>
             </div>
             <div class="part">
                 <div class="image">
@@ -62,7 +64,7 @@
 
         <div class="part bottom-part">
             <div class="separator"></div>
-            <h3>Write a Description for the image you have chosen to recreate.</h3>
+            <h5 style="color: #707070">Write a Description for the image you have chosen to recreate.</h5>
                 <!-- Text box and submit button -->
             <textarea class="centered-textarea" id="textbox" rows="4" placeholder="Enter your text"></textarea>
             <br>

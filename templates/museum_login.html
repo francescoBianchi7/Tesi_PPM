@@ -8,19 +8,24 @@
 <body>
 {% block body %}
    {% for message in get_flashed_messages() %}
-
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	<div class="alert alert-warning alert-dismissible fade show" id=”div_flash” role="alert">
 	  {{ message }}
-	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="removeFlash()"></button>
 	</div>
-
-
 {% endfor %}
+    <div class="title">
+            <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
+            <h5>Test Your Memory</h5>
 
-	<h1>Login!!</h1>
-	<br/><br/>
+        </div>
+    <div class="content-container">
+        <div class="description">
+            <h2>Login!</h2>
+            <h4 style="color: #707070">Insert your username and password to access the back-end page</h4>
+        </div>
+    </div>
 
-    <div class="shadow p-3 mb-5  bg-body rounded ">
+    <div class="border border-secondary p-3 bg-body rounded m-3">
         <form method="POST">
         {{ form.hidden_tag() }}
         {{ form.username.label(class='form-label') }}
@@ -30,13 +35,18 @@
         {{ form.password.label(class='form-label') }}
         {{ form.password(class='form-control')}}
         <br/>
-
-        {{ form.submit(class='btn btn-secondary') }}
-
+        {{ form.submit(class='submitButton w-25 ', id='submit-btn') }}
         <br/>
         </form>
     </div>
     <br/><br/><br/>
 {% endblock %}
 </body>
+<script>
+    function removeFlash() {
+  const element = document.getElementById(‘div_flash’);
+  element.remove();
+}
+
+</script>
 </html>

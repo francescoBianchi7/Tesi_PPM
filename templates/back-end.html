@@ -8,26 +8,25 @@
 <body>
 
 {% block body %}
-     <div class="header">
-        <div class="title">
-            <h1>Test Your Memory</h1>
-        </div>
+     <div class="title">
+            <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
+            <h5>Test Your Memory</h5>
+
         <div class="museum-info">
             <div class="museum-name">
-                {{ museum}}
+                <h4 style="color: #707070">{{ museum_name }}</h4>
             </div>
         </div>
-     </div>
-    <a href="{{ url_for('add_collection')}}">+ add new collection</a>
+    </div>
+    <div class="add-painting-link p-3 d-flex">
+            <h5><a class='submitButton  text-center' href="{{url_for('add_painting', collection=getSelectedCollection)}}">+Add Painting</a></h5>
+             <h5><a class="submitButton text-center" href="{{ url_for('add_collection')}}">+ add new collection</a></h5>
+        </div>
     <div class="centered-content">
+            <div class="select-box">
+                <select  id="collection_list"  onchange=paints_by_collection()></select>
 
-        <div class="collection-title">
-            <select id="collection_list" class="form_control" onchange=paints_by_collection()></select>
-            <h1>Collection Title</h1>
-        </div>
-        <div class="add-painting-link">
-            <h2><a href="{{url_for('add_painting', collection=getSelectedCollection)}}">+Add Painting</a></h2>
-        </div>
+            </div>
     </div>
     <div class="collection-container" id="be-container">
         <div class="collection-cell">
@@ -51,6 +50,7 @@
             </div>
 
         <!-- Add more cells as needed -->
+        </div>
     </div>
 {% endblock %}
 </body>

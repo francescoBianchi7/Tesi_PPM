@@ -13,11 +13,13 @@
 {% block body %}
      <div class="header">
         <div class="title">
-            <h1>Test Your Memory</h1>
+            <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
+            <h5>Test Your Memory</h5>
+
         </div>
         <div class="museum-info">
             <div class="museum-name">
-                Museum Name
+                <h4 style="color: #707070">{{ museum }}</h4>
             </div>
         </div>
         <div class="placeholder-container" onclick="window.location.href='{{ url_for('userCollection') }}'">
@@ -31,8 +33,8 @@
     </div>
 <div class="content-container">
 <div class="description">
-    <h2>Welcome to Test your Memory</h2>
-    <h4>Try to recreate a painting by describing it to an AI and see what it creates.</h4>
+    <h2>Welcome !</h2>
+    <h4 style="color: #707070">Try to recreate a painting by describing it to an AI and see what it creates.</h4>
 </div>
 </div>
         <div class="container">
