@@ -34,7 +34,7 @@ window.getSelectedCollection=function (){
     let opt=document.getElementById('collection_list')
     return opt.value
 }
-
+//TBD remove shown painting on collection switch
 window.paints_by_collection=function (){
     let selected = document.getElementById("collection_list");
     if(selected.value==='empty'){
@@ -55,7 +55,6 @@ window.paints_by_collection=function (){
             .then(json=>{
                 console.log("received", JSON.stringify(json))
                 let list=json.keys
-
                 for(const [key, value] of Object.entries(json)) {
                     console.log("AP", key, value)
                     console.log(value.description)
@@ -78,6 +77,7 @@ window.paints_by_collection=function (){
                     var img_description= document.createElement('p')
                     img_description.innerText=value.description
                     img_description.textContent=value.description
+                    img_description.className='m-3'
                     description_box.appendChild(img_description)
 
                     var checkbox=document.createElement('input')

@@ -35,18 +35,14 @@
         {{ form.password.label(class='form-label') }}
         {{ form.password(class='form-control')}}
         <br/>
-        {{ form.submit(class='submitButton w-25 ', id='submit-btn') }}
+        {{ form.submit(class='submitButton w-50 ', id='submit-btn') }}
         <br/>
         </form>
     </div>
     <br/><br/><br/>
 {% endblock %}
 </body>
-<script>
-    function removeFlash() {
-  const element = document.getElementById(‘div_flash’);
-  element.remove();
-}
 
-</script>
+
+
 </html>

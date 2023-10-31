@@ -5,7 +5,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 from flask_sqlalchemy import SQLAlchemy
 from wtforms import Form, TextAreaField, \
-    validators, StringField, PasswordField,BooleanField,ValidationError, SubmitField, SelectField
+    validators, StringField, PasswordField, BooleanField, ValidationError, SubmitField, SelectField
 from werkzeug.utils import secure_filename
 from wtforms.validators import DataRequired, EqualTo, Length
 import os
@@ -17,45 +17,53 @@ training_dir = 'content'
 p = 'psw'
 
 
-#FORMS
+# FORMS
 class PswForm(FlaskForm):
     select_op = SelectField("Select operation", choices=["Delete Painting", "Add Painting"])
     psw = StringField("insert psw", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
+
 class MuseumForm(FlaskForm):
     museum = StringField("insert museum name", validators=[DataRequired()])
-    username = StringField("enter a username(you will login with this)",validators=[DataRequired()])
-    password_hash = PasswordField("Insert password", validators=[DataRequired(),EqualTo('password_hash2',message='passwords must match')])
+    username = StringField("enter a username(you will login with this)", validators=[DataRequired()])
+    password_hash = PasswordField("Insert password", validators=[DataRequired(), EqualTo('password_hash2',
+                                                                                         message='passwords must match')])
     password_hash2 = PasswordField("Confirm password", validators=[DataRequired()])
     submit = SubmitField('Submit')
+
 
 class LoginForm(FlaskForm):
     username = StringField("museum username", validators=[DataRequired()])
     password = PasswordField("password", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
+
 class AddPicturesForm(FlaskForm):
     author = StringField("Insert author", validators=[DataRequired()])
+    collection_select = SelectField('Select the Collection of the painting', validators=[DataRequired()])
     name = StringField("Insert name", validators=[DataRequired()])
     saved_pic = FileField("Picture that will be shown to users", validators=[DataRequired()])
     description = TextAreaField('Insert a brief description of the painting', validators=[DataRequired()])
+    training_file = FileField("Insert the Picture that will be used for training", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
 
 class AddCollectionForm(FlaskForm):
     collection_name = StringField('Insert name of collection')
     submit = SubmitField('Submit')
 
-def upload_painting(collection,author, name, file):
+
+def upload_painting(collection, author, name, file):
     folder_path = imgdir + collection
     print(folder_path)
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
     path = folder_path + "/"
     print(path)
-    shown_name = author.data+", "+name.data
+    shown_name = author.data + ", " + name.data
     print(shown_name)
-    filename = name.data + ".jpg"
+    filename = shown_name + ".jpg"
     print(filename)
     file.data.save(os.path.join(path, filename))
     full_path = path + filename
@@ -70,3 +78,13 @@ def delete_painting(author, paint):
     directory = os.listdir(dir_path)
     print(len(directory))
 
+
+def remove_collection(path):
+
+    if len(os.listdir(path)) == 0:
+        print('dIREctory empty')
+        os.rmdir(path)
+        return True
+    else:
+        print('directory not empty')
+        return False

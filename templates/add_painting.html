@@ -29,9 +29,11 @@
    </div>
 
    <div class="border border-secondary p-3 mb-5 bg-body rounded">
-        <h3>it will be added to {{collection.collection_name }}</h3>
         <form method="POST" enctype="multipart/form-data">
-
+                {{ form.hidden_tag() }}
+                {{ form.collection_select.label(class='form-label') }}
+                {{ form.collection_select(class='form-control')}}
+                <br/>
                 {{ form.hidden_tag() }}
                 {{ form.author.label(class='form-label') }}
                 {{ form.author(class='form-control')}}
@@ -46,6 +48,10 @@
                 {{ form.description.label(class='form-label') }}
                 {{ form.description(class='form-control')}}
                 <br/>
+            <h5>insert file for training</h5>
+            {{ form.training_file.label(class='form-label') }}
+            {{ form.training_file(class='form-control')}}
+            <br/>
                 {{ form.submit(class='submitButton w-25 ') }}
 
         </form>

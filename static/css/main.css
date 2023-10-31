@@ -70,8 +70,6 @@ body{
 .collection-container {
     display: flex;
     flex-direction: column;
-    width:90%;
-    margin-left: 5%;
            /* You can adjust the width as needed */
         }
 .centered-content {

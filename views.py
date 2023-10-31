@@ -106,21 +106,36 @@ def back_end():
 @app.route("/back_end/add_painting", methods=["GET", "POST"])
 @database.login_required
 def add_painting():
-    museum_collections = database.Collection.query.filter_by(museum=database.current_user.username).all()
-
     active_collection = database.Collection.query.order_by(database.Collection.date_added).first()
     print(database.Paintings.query.order_by(database.Paintings.id).all())
+    all_collections = database.Collection.query.order_by(database.Collection.date_added).all()
+    col= {}
+    col1=[]
+    print("d", all_collections)
+    for c in all_collections:
+        col[c.id] = c.collection_name
+        col1.append(c.collection_name)
+    print("12", col)
+    print(col1)
     form = be.AddPicturesForm()
+    form.collection_select.choices = [(collect.collection_name, collect.collection_name) for collect in all_collections]
+    print("choices", form.collection_select.choices)
     if form.validate_on_submit():
         f = form.saved_pic
-        paintings = database.Paintings.query.filter_by(collection=active_collection.id).all()
-        full_path, shown_name = be.upload_painting(active_collection.collection_name, form.author, form.name, f)
+        print("selected_collection", form.collection_select.data)
+        form_col = database.Collection.query.filter_by(collection_name=form.collection_select.data).first()
+        print(form_col)
+        paintings = database.Paintings.query.filter_by(collection=form_col.id).all()
+        '''TBD add check for already existing painting'''
+        full_path, shown_name = be.upload_painting(form.collection_select.data, form.author, form.name, f)
         painting = database.Paintings(id=len(paintings), path=full_path, painting_name=shown_name,
-                                      description=form.description.data, collection=active_collection.id)
+                                      description=form.description.data, collection=form_col.id)
         db.session.add(painting)
         db.session.commit()
         return redirect(url_for('back_end'))
-    return render_template('add_painting.html', form=form, collection=active_collection)
+    return render_template('add_painting.html', form=form, all_col=col)
+
+
 
 @app.route("/back_end/get_collections", methods=["GET"])
 def get_collections():
@@ -132,6 +147,8 @@ def get_collections():
         collection_names.append(museum_collections[i].collection_name)
     response = jsonify(collection_names)
     return response
+
+
 @app.route('/back_end/add_collection', methods=['GET', 'POST'])
 @database.login_required
 def add_collection():
@@ -140,11 +157,17 @@ def add_collection():
     museum = None
     form = be.AddCollectionForm()
     if form.validate_on_submit():
-        collection_name = database.Collection.query.filter_by(museum=form.collection_name.data).first()
+        print("ada", form.collection_name)
+        print("ada", form.collection_name.data)
+        collection_name = database.Collection.query.filter_by(collection_name=form.collection_name.data).first()
+        print("asd", collection_name)
         if collection_name is None:
             path = be.imgdir+form.collection_name.data
-            if not os.path.exists(path):
-                os.makedirs(path)
+            print("xd", path)
+            try:
+                os.mkdir(path)
+            except FileExistsError:
+                pass
             collection = database.Collection(museum=database.current_user.username, collection_name=form.collection_name
                                              .data, collection_path=path,)
             db.session.add(collection)
@@ -156,6 +179,28 @@ def add_collection():
     our_collection = database.Collection.query.order_by(database.Collection.date_added)
     return render_template('add_collection.html', form=form, name=collection,
                            our_users=our_collection)
+
+@app.route("/back_end/delete_collection/<int:id>")
+def delete_collection(id):
+    collection = None
+    path = None
+    museum = None
+    form = be.AddCollectionForm()
+    our_collection = database.Collection.query.order_by(database.Collection.date_added)
+    collection_to_delete = database.Collection.query.filter_by(id=id).first()
+
+    try:
+        empty = be.remove_collection(collection_to_delete.collection_path)
+        if empty:
+            db.session.delete(collection_to_delete)
+            db.session.commit()
+        return render_template('add_collection.html', form=form, name=collection,
+                               our_users=our_collection)
+    except:
+        flash('there was a problem deleting the collection')
+        return render_template('add_collection.html', form=form, name=collection,
+                               our_users=our_collection)
+
 
 @app.route("/back_end/get_paints_by_collection", methods=['POST', 'GET'])
 def get_paintings_of_author():
@@ -175,6 +220,7 @@ def get_paintings_of_author():
         print(d)
     response = jsonify(d)
     return response
+
 @app.route("/upload-img", methods=["POST", "GET"])
 def upload_img():
     print("called")
