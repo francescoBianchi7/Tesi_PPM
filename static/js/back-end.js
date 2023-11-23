@@ -2,38 +2,22 @@ import {Config} from "./config.js";
 console.log("loaded")
 const loader = document.querySelector("#loading");
 
-/* Open */
-window.openNav=function() {
-    console.log("clicked")
-    displayLoading()
-  document.getElementById("myNav").style.display = "block";
 
-}
-
-/* Close */
-window.closeNav=function () {
-    hideLoading()
-  document.getElementById("myNav").style.display = "none";
-}
-
-window.displayLoading=function () {
-    loader.classList.add("display");
-    // to stop loading after some time
-    //let text=document.createElement('h2')
-    //text.innerHTML="The AI is generating your image, please wait"
-    //text.style.color='black'
-}
-
-// hiding loading
-window.hideLoading=function () {
-    loader.classList.remove("display");
-}
 
 
 window.getSelectedCollection=function (){
     let opt=document.getElementById('collection_list')
     return opt.value
 }
+
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
+const container = document.querySelector('#be-container');
+removeAllChildNodes(container);
+
 //TBD remove shown painting on collection switch
 window.paints_by_collection=function (){
     let selected = document.getElementById("collection_list");
@@ -55,8 +39,10 @@ window.paints_by_collection=function (){
             .then(json=>{
                 console.log("received", JSON.stringify(json))
                 let list=json.keys
+                removeAllChildNodes(container)
+
                 for(const [key, value] of Object.entries(json)) {
-                    console.log("AP", key, value)
+
                     console.log(value.description)
                     console.log(value.path)
                     var img_box = document.createElement('div')
@@ -69,6 +55,10 @@ window.paints_by_collection=function (){
                     caption.appendChild(text)
                     img.className='collectionimage'
                     img.src = value.path;
+                    var closebtn=document.createElement('span')
+                    closebtn.className='close'
+                    closebtn.innerHTML='&times;'
+                    img_box.appendChild(closebtn)
                     img_box.appendChild(img);
                     img_box.appendChild(caption);
 
@@ -83,9 +73,12 @@ window.paints_by_collection=function (){
                     var checkbox=document.createElement('input')
                     checkbox.type='checkbox'
                     checkbox.className='checkbox'
+                    checkbox.disabled=true
+                    checkbox.checked=true
 
                     var cell = document.createElement('div')
                     cell.className='collection-cell'
+
                     cell.appendChild(img_box)
                     cell.appendChild(description_box)
                     cell.appendChild(checkbox)
@@ -93,36 +86,60 @@ window.paints_by_collection=function (){
                     document.getElementById('be-container').appendChild(cell)
 
                 }
+                openPopUp()
             })
     }
 }
 
-window.deleteFile=function (){
-    let aut=document.getElementById("authors_list")
-    let painted=document.getElementById("painting_list")
-    var entry={
-        author: aut.value,
-        painted: painted.value
-    }
-    console.log(entry)
 
-    fetch(`${Config.BASE_URL}/remove_painting`, {
-            method: "POST",
+  // Hide the pop-up window when the close button is clicked
+
+window.openPopUp=function(){
+  var popupLink = document.querySelectorAll('.close');
+  var popupWindow = document.getElementById("popup-window");
+  var closeButton = document.getElementById("close-button");
+  var popupText=document.getElementById("popup-text")
+  var deleteButton=document.getElementById('delete-button')
+  // Show the pop-up window when the link is clicked
+  popupLink.forEach((c)=>{
+      c.addEventListener("click", function(event) {
+          var s="do you want to remove:"
+          console.log(c.parentNode.children.item(1))
+          deleteButton.addEventListener('click',function(){
+              deleteFile(c.parentNode.lastElementChild.textContent)
+          });
+          popupText.textContent=s+c.parentNode.lastElementChild.textContent
+          event.preventDefault();
+          popupWindow.style.display = "block";
+      });
+  });
+
+   closeButton.addEventListener("click", function() {
+    popupWindow.style.display = "none";
+  });
+}
+
+
+window.deleteFile=function (p_name){
+    console.log('da', p_name)
+    console.log('ad',document.getElementById('collection_list').value)
+    let entry={
+        name: p_name,
+        collection: document.getElementById('collection_list').value
+    }
+    console.log('entry: ',entry)
+    fetch(`${Config.BASE_URL}/back_end/remove_painting`, {
+              method: "POST",
             credentials: "include", //cookies on the page
             body: JSON.stringify(entry),
             cache: "no-cache",
             headers: new Headers({
                 "content-type": "application/json"
             })
+
     }).then(response=>response.json())
         .then(json=>{
-            var author=document.getElementById("authors_list")
-            author.value='empty'
-            var paint=document.getElementById("painting_list")
-            paint.value='empty'
-            author_list()
-            paints_by_author()
-            window.alert(json.value+"removed correctly")
+            console.log(json+"removed correctly")
         })
 }
 
@@ -145,7 +162,24 @@ window.remove_options=function (element){
         }
     }
 }
-
+//TND
+window.paints_finetune = function (){
+    let selected = document.getElementById("collection_list");
+    if(selected.value==='empty'){
+        console.log('no value')
+    }
+    else {
+        fetch(`${Config.BASE_URL}/back_end/get_finetuning`, {
+            method: "POST",
+            credentials: "include", //cookies on the page
+            body: JSON.stringify(selected.value),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        })
+    }
+}
 
 window.collection_list=function (){
     fetch(`${Config.BASE_URL}/back_end/get_collections`, {
@@ -160,7 +194,7 @@ window.collection_list=function (){
             console.log("received", JSON.stringify(json))
             let list=document.getElementById("collection_list")
             let empty= document.createElement('option')
-            empty.value=''
+            empty.value='empty'
             empty.innerHTML=''
             list.appendChild(empty)
             for(const i in json) {

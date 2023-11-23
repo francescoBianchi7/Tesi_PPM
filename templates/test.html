@@ -6,53 +6,13 @@
 </head>
 <body>
 <br/>
-<table class="table table-hover table-bordered table-striped">
-
-    {% for our_user in our_users %}
-	<tr>
-	<td>{{ our_user.id }}. <a href="">{{ our_user.museum }}</a>--username:{{ our_user.username }}--
-	PW: {{ our_user.password_hash }} -
-	<a href="{{ url_for('delete', id=our_user.id)}}">Delete</a></td>
-	</tr>
-    {% endfor %}
-
-</table>
-<br/>
-<table class="table table-hover table-bordered table-striped">
-
-    {% for our_user in our_users %}
-	<tr>
-	<td>{{ our_user.id }}. <a href="">{{ our_user.museum }}</a>--username:{{ our_user.username }}--
-	PW: {{ our_user.password_hash }} -
-	<a href="{{ url_for('delete', id=our_user.id)}}">Delete</a></td>
-	</tr>
-    {% endfor %}
-
-</table>
-<br/>
-<table class="table table-hover table-bordered table-striped">
-
-    {% for our_user in our_users %}
-	<tr>
-	<td>{{ our_user.id }}. <a href="">{{ our_user.museum }}</a>--username:{{ our_user.username }}--
-	PW: {{ our_user.password_hash }} -
-	<a href="{{ url_for('delete', id=our_user.id)}}">Delete</a></td>
-	</tr>
-    {% endfor %}
-
-</table>
-<br/>
-<table class="table table-hover table-bordered table-striped">
-
-    {% for our_user in our_users %}
-	<tr>
-	<td>{{ our_user.id }}. <a href="">{{ our_user.museum }}</a>--username:{{ our_user.username }}--
-	PW: {{ our_user.password_hash }} -
-	<a href="{{ url_for('delete', id=our_user.id)}}">Delete</a></td>
-	</tr>
-    {% endfor %}
-
-</table>
-
+  <div class="tabletContainer">
+                <!-- Canvas -->
+                <canvas id="main-canvas">
+                    <img id="img-main" src="/static/images/MyFirstCollection/Leonardo%20da%20Vinci,%20Gioconda.jpg" width="640" height="480" alt="" srcset="">
+                </canvas>
+            </div>
 </body>
+<script
+            src= "{{ url_for('static',filename='js/detection.js')}}"></script>
 </html>

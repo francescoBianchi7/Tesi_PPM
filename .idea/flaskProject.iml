@@ -11,6 +11,12 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="twitter-bootstrap" level="application" />
     <orderEntry type="library" name="boxicons" level="application" />
+    <orderEntry type="library" name="tracker-js" level="application" />
+    <orderEntry type="library" name="@tensorflow-models" level="application" />
+    <orderEntry type="library" name="tracking.js" level="application" />
+    <orderEntry type="library" name="p5.js" level="application" />
+    <orderEntry type="library" name="ml5" level="application" />
+    <orderEntry type="library" name="@tensorflow" level="application" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="renderExternalDocumentation" value="true" />

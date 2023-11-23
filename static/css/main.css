@@ -40,18 +40,22 @@ body{
 }
 
 .placeholder-container {
-    display: block;
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
 .placeholder-icon {
     font-size: 24px;
     color: #888;
+    right: 50%;
+    display: flex;
 }
 
 .placeholder-number {
     font-size: 14px;
     color: #888;
+    text-align: center;
 }
         /*  *****/
     /*BACK_END.html*/
@@ -72,6 +76,22 @@ body{
     flex-direction: column;
            /* You can adjust the width as needed */
         }
+.grid-item span {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    z-index: 100;
+    background-color: #FFF;
+    color: red;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: .8;
+    text-align: center;
+    font-size: 18px;
+
+    border: 1px solid grey;
+}
+
 .centered-content {
     text-align: center;
     margin-bottom: 20px; /* Add margin to separate from collection container */
@@ -97,7 +117,22 @@ body{
             margin-right: 10px; /* Adjust the spacing between image and description */
         }
 
-
+#popup-window {
+  position: fixed;
+  width: 80%;
+  height: 200px;
+  background: white;
+  border: 1px solid black;
+  padding: 10px;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 200;
+  display: none;
+    text-align: center;
+}
 
 .img-description {
     flex: 1;
@@ -195,7 +230,25 @@ SEARCH BAR END
 .grid-item img {
     width: 100%;
     height: 200px; /* Set max height to fill the .grid-item */
+
+
+}
+.grid-item canvas {
+    width: 100%;
+    height: 200px; /* Set max height to fill the .grid-item */
     object-fit: cover;
+
+}
+.img-blurred{
+    -webkit-mask-image: radial-gradient(ellipse 60% 100% at 50% 50%, grey 50%, rgba(255, 255, 255, 0) 50%);
+    mask-image: radial-gradient(ellipse 60% 100% at 50% 50%, grey 50%, rgba(255, 255, 255, 0) 50%);
+
+}
+
+.img-blurredf{
+    -webkit-mask-image: radial-gradient(ellipse 60% 100% at 50% 50%, grey 50%, rgba(255, 255, 255, 0.1) 50%);
+    mask-image: radial-gradient(ellipse 60% 100% at 50% 50%, grey 50%, rgba(255, 255, 255, 0.1) 50%);
+
 }
 .caption {
     background-color: rgba(0, 0, 0, 0.7);
@@ -255,6 +308,7 @@ SEARCH BAR END
 .top-part {
     display: flex;
     align-items: center; /* Center items vertically */
+    justify-content: space-between;
 }
 /* Style for the text in the top part */
 .text {
@@ -268,12 +322,20 @@ SEARCH BAR END
 /* Style for the image in the top part */
 .image {
     flex: 1; /* Make the image take up available space */
-    text-align: right; /* Align the image to the right */
+    text-align: center; /* Align the image to the right */
     padding:5px;
+    border: 1px solid;
+    align-items: center;
+    /*-webkit-mask-image: url(/static/css/assets/mask.png);
+    mask-image: url(/static/css/assets/mask.png);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;*/
 }
+
 .image img {
     max-width: 80%; /* Limit the image size to fit its container */
     height: auto; /* Maintain the image's aspect ratio */
+
 }
 @media (min-width: 768px) {
             /* Larger screens */
@@ -420,8 +482,7 @@ SEARCH BAR END
 /***/
 .image-container {
     margin-top: 10px;
-    width: 90%;
-    max-height: 85vh; /* Set max-height to fit inside the screen */
+    width: 90%; /* Set max-height to fit inside the screen */
     margin: 0 auto; /* Center the container horizontally */
     display: flex;
     flex-direction: column;
@@ -438,20 +499,20 @@ SEARCH BAR END
 }
 
 .wrapper{
-            width: 100%; /* Set the wrapper width to match the images */
-            text-align: center;
+    width: 100%; /* Set the wrapper width to match the images */
+    text-align: center;
 }
 
 .imagesf{
     width: 100%; /* Default width: Full container width */
-    height: auto; /* Maintain aspect ratio */
-    object-fit: contain; /* Maintain aspect ratio while fitting */
+    max-height:300px;
+
 }
 
 @media (min-width: 425px) {
             /* Larger screens */
             .wrapper {
-                width: 85%; /* Set width for larger screens */
+                width: 70%; /* Set width for larger screens */
             }
         }
 @media (min-width: 768px) {
@@ -502,7 +563,7 @@ SEARCH BAR END
 }
 
 .buttons {
-    padding: 20px;
+    padding-top: 20px;
     justify-content: space-evenly;
     text-align: center;
 }
@@ -510,14 +571,14 @@ SEARCH BAR END
 .button {
     /* Increase separation between buttons */
     text-align: center;
-    margin-right:10px;
-    margin-left:10px ;
+
     padding: 10px 20px;
     background-color: rgba(0, 0, 0, 0.7);
     color: #fff;
     border: none;
     border-radius: 6px;
 }
+
 
 *, *:before, *:after{
   margin: 0;
@@ -548,7 +609,7 @@ SEARCH BAR END
 }
 
 .closebtn {
-    font-size: 50px;
+    font-size: 25px;
 
 }
 .overlay-container {
@@ -583,7 +644,8 @@ SEARCH BAR END
 .content-details {
   position: absolute;
   text-align: center;
-    height: 100%;
+    background: white;
+  height: 100%;
   width: 100%;
   top: 50%;
   left: 50%;
@@ -599,7 +661,7 @@ SEARCH BAR END
 .content:hover .content-details{
   top: 50%;
   left: 50%;
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .content-details h3{
@@ -607,7 +669,6 @@ SEARCH BAR END
   font-weight: 500;
   letter-spacing: 0.15em;
   margin-bottom: 0.5em;
-
 }
 
 .content-details p{
@@ -672,6 +733,7 @@ canvas{
 
 canvas-description{
     text-align: center;
+    max-width: 80%;
 }
 
 .download-button {
@@ -687,10 +749,10 @@ canvas-description{
     border-radius: 6px;
 }
 .download-icon {
-            margin-right: 5px;
-            width: 20px;
-            height: 20px;
-            fill: white; /* Set the fill color of the SVG */
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+    fill: white; /* Set the fill color of the SVG */
 }
 
 #voteBtn{
@@ -777,4 +839,18 @@ canvas-description{
 .image-box-v .img{
     height: auto;
     width: 100%;
+}
+
+/*img fading*/
+.tabletContainer{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#main-canvas{
+
+    z-index: -1;
 }

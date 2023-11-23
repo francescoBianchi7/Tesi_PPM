@@ -68,10 +68,6 @@ window.changeSelection=function (ib,name,path){
 }
 
 
-window.getSelected=function (){
-    return selected;
-}
-
 window.get_paintings = function(){
     fetch(`${Config.BASE_URL}/start_paints`, {
         method: "GET",
@@ -83,10 +79,14 @@ window.get_paintings = function(){
     }).then(response=>response.json())
         .then(json=>{
             console.log("received", JSON.stringify(json))
-            let list=json.keys
+            let list=json.keys;
+            const imageUrls = []
             for(const [key, value] of Object.entries(json)) {
                 console.log("AP", key, value)
+                imageUrls.push(value)
+
                 var img_box = document.createElement('div')
+
                 img_box.className = 'grid-item'
                 img_box.dataset.name = key
                 var img = document.createElement('img')
@@ -96,10 +96,12 @@ window.get_paintings = function(){
                 caption.innerText=key
                 text.textContent = key;
                 img.src = value;
-                //img.className="w-full h-64 object-cover img-fluid"
+                img.className="img-blurred"
+                //img_box.appendChild(canvas)
                 //img.style.filter='blur(15px)'
-
-                img_box.appendChild(img);
+                //setUpCanvas(img, value,img_box)
+                img_box.appendChild(img)
+                //img_box.appendChild(canvas);
                 img_box.appendChild(caption);
                 document.querySelector(".grid-container").appendChild(img_box)
             }
@@ -110,5 +112,7 @@ window.get_paintings = function(){
                 })
         })
 }
+
+
 document.addEventListener("DOMContentLoaded", get_paintings);
 

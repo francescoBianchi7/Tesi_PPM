@@ -15,7 +15,6 @@
         <div class="title">
             <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
             <h5>Test Your Memory</h5>
-
         </div>
         <div class="museum-info">
             <div class="museum-name">
@@ -27,10 +26,11 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" ><image href="/static/css/assets/bx_collection_icon.png" height="40" width="40" /></svg>
             </div>
             <div class="placeholder-number">
-                #123
+                {{ Userid }}
             </div>
         </div>
     </div>
+    <div class="images-style"></div>
 <div class="content-container">
 <div class="description">
     <h2>Welcome !</h2>
@@ -44,13 +44,16 @@
                 <input class="search-bar" type="text" placeholder="Search here..." />
 
             </div>
-            <div class="grid-container">
+            <div id="grid" class="grid-container">
 
             </div>
         </div>
 </div>
 {% endblock %}
 {% block script %}
+    <script type="module">
+import tracking from 'https://cdn.jsdelivr.net/npm/tracking@1.1.3/+esm'
+</script>
 <script type="module"
         src="{{ url_for('static',filename='js/start.js')}}"></script>
 {% endblock %}

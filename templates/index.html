@@ -18,16 +18,12 @@
 </head>
 <body >
 {% block body %}
-    <!--<div id="myNav" class="overlay" style="display: none">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <div class="overlay-content">
-            <h2>Your image is being generated!!</h2>
-            <p>The process will take some time to complete</p>
-            <p>once finished you will be redirected to the image generated</p>
-            <p>click on the X when you are done reading to close this window</p>
-            <div id="loading"></div>
-        </div>
-    </div>-->
+    <filter id="filter">
+      <feGaussianBlur stdDeviation="5" />
+    </filter>
+    <mask id="mask">
+      <ellipse cx="50%" cy="50%" rx="25%" ry="25%" fill="white" filter="url(#filter)"></ellipse>
+    </mask>
     <div class="header">
         <div class="title">
             <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
@@ -43,7 +39,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" ><image href="/static/css/assets/bx_collection_icon.png" height="40" width="40" /></svg>
             </div>
             <div class="placeholder-number">
-                #123
+                {{ Userid }}
             </div>
         </div>
     </div>
@@ -55,16 +51,14 @@
                 <p>Selected painting</p>
                 <h4>{{ paintingName }}</h4>
             </div>
-            <div class="part">
                 <div class="image">
-                    <img src="{{ path }}">
-                </div>
+                        <img id="selected-img" class="img-blurred" src="{{ path }}">
             </div>
         </div>
 
         <div class="part bottom-part">
             <div class="separator"></div>
-            <h5 style="color: #707070">Write a Description for the image you have chosen to recreate.</h5>
+            <h5 style="color: #707070">Describe the details of the background of the image</h5>
                 <!-- Text box and submit button -->
             <textarea class="centered-textarea" id="textbox" rows="4" placeholder="Enter your text"></textarea>
             <br>
@@ -77,6 +71,7 @@
 {% block script %}
 <script type="module"
             src= "{{ url_for('static', filename='js/index.js')}}">
-    </script>
+</script>
+
 {% endblock %}
 </html>

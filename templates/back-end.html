@@ -8,16 +8,27 @@
 <body>
 
 {% block body %}
-     <div class="title">
-            <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
-            <h5>Test Your Memory</h5>
-
-        <div class="museum-info">
-            <div class="museum-name">
-                <h4 style="color: #707070">{{ museum_name }}</h4>
-            </div>
+    <div class="header">
+         <div class="title">
+                <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
+                <h5>Test Your Memory</h5>
         </div>
+            <div class="museum-info">
+                <div class="museum-name">
+                    <h4 style="color: #707070">{{ museum_name }}</h4>
+                </div>
+            </div>
     </div>
+   <div id="popup-window">
+          <div class="popup-text">
+                <h1 id="delete-paint">Delete Painting</h1>
+                <p id="popup-text">This is a pop-up window.</p>
+          </div>
+       <div class="buttons">
+          <button id="delete-button" class="button" >Delete</button>
+           <button id="close-button" class="button">Close</button>
+       </div>
+</div>
     <div class="add-painting-link p-3 d-flex">
             <h5><a class='submitButton  text-center' href="{{url_for('add_painting', collection=getSelectedCollection)}}">+Add Painting</a></h5>
              <h5><a class="submitButton text-center" href="{{ url_for('add_collection')}}">+ add new collection</a></h5>
@@ -29,22 +40,7 @@
             </div>
     </div>
     <div class="collection-container" id="be-container">
-        <div class="collection-cell">
-            <div class="grid-item">
-                <img class="collectionimage" src="/static/images/Botticelli/Botticelli,Birth of Venus.jpg" alt="Image 1">
-                <div class="caption">
-                    <h6>Birth of Venus</h6>
-                </div>
-            </div>
-            <div class="img-description">
-                <p>Description for Botticelli Birth of venus</p>
-            </div>
-            <input class="checkbox" type="checkbox">
-        </div>
 
-
-        <!-- Add more cells as needed -->
-        </div>
     </div>
 {% endblock %}
 </body>

@@ -3,8 +3,6 @@ import time
 from database import Flask
 from flask import Blueprint, render_template, request, jsonify, redirect, \
     url_for, flash, make_response, session
-
-
 import back_end as be
 # import AI_train
 
@@ -26,8 +24,6 @@ with app.app_context():
     db.create_all()
 
 """avvio"""
-
-
 # hub_model = AI.hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
 # print("AI started", hub_model)
 # caricamente del modello per il style transfer, è già fatto e va scaricato
@@ -95,18 +91,14 @@ def login():
 @app.route("/back_end", methods=["GET", "POST"])
 @database.login_required
 def back_end():
-    print("adfa", database.current_user.username)
-    print("adfaf", database.current_user.museum)
     museum = database.Museums.query.filter_by(username=database.current_user.username).first()
     museum_name = museum.museum
-    print(museum_name)
-    # Validate Form
     return render_template("back-end.html", museum_name=museum_name)
 
 @app.route("/back_end/add_painting", methods=["GET", "POST"])
 @database.login_required
 def add_painting():
-    active_collection = database.Collection.query.order_by(database.Collection.date_added).first()
+
     print(database.Paintings.query.order_by(database.Paintings.id).all())
     all_collections = database.Collection.query.order_by(database.Collection.date_added).all()
     col= {}
@@ -122,14 +114,21 @@ def add_painting():
     print("choices", form.collection_select.choices)
     if form.validate_on_submit():
         f = form.saved_pic
+        print(form.training_text)
+        print(form.training_text.data)
+        print(form.author)
+        print(form.author.data)
+        train_desc = form.training_text.data + "by" + form.author.data
+        print("training description", train_desc)
         print("selected_collection", form.collection_select.data)
         form_col = database.Collection.query.filter_by(collection_name=form.collection_select.data).first()
-        print(form_col)
+
         paintings = database.Paintings.query.filter_by(collection=form_col.id).all()
         '''TBD add check for already existing painting'''
         full_path, shown_name = be.upload_painting(form.collection_select.data, form.author, form.name, f)
         painting = database.Paintings(id=len(paintings), path=full_path, painting_name=shown_name,
-                                      description=form.description.data, collection=form_col.id)
+                                      description=form.description.data, collection=form_col.id,
+                                      finetuning_description=train_desc)
         db.session.add(painting)
         db.session.commit()
         return redirect(url_for('back_end'))
@@ -201,6 +200,38 @@ def delete_collection(id):
         return render_template('add_collection.html', form=form, name=collection,
                                our_users=our_collection)
 
+@app.route("/back_end/get_finetuning", methods=['POST', 'GET'])
+def get_finetuning():
+
+    """TBD if finetune is present return it's path, response will be {painting_path: finetune_path} also save it to db"""
+    response={}
+
+    return response
+@app.route("/back_end/remove_painting", methods=['POST', 'GET'])
+def delete_painting():
+    entry = request.get_json()
+    print(database.Collection.query.filter_by(collection_name=entry['collection']))
+    sel_collection = database.Collection.query.filter_by(collection_name=entry['collection']).first()
+    print('selected col', sel_collection)
+    paints = database.Paintings.query.filter_by(collection=sel_collection.id, painting_name=entry['name']).first()
+    print('all colle paints', paints)
+    url_to_remove = paints.path
+    print(url_to_remove)
+    try:
+        removed = be.delete_painting(url_to_remove, sel_collection.collection_path)
+        if removed:
+            db.session.remove(paints)
+            db.session.commit()
+            return redirect(url_for('back_end'))
+    except:
+        flash('painting not found')
+    #print(database.Paintings.query.filter_by(path=url_to_remove).first())
+    #be.delete_painting(entry.get("author"), entry.get("painted"))
+    f = paints.path+"was deleted"
+    #print(f)
+    response = jsonify(f)
+    return response
+
 
 @app.route("/back_end/get_paints_by_collection", methods=['POST', 'GET'])
 def get_paintings_of_author():
@@ -215,6 +246,7 @@ def get_paintings_of_author():
     for i in os.listdir(collection_paints):
         p = database.Paintings.query.filter_by(path=collection_paints+i).first()
         print(p)
+        print(p.finetuning_description)
         v= { 'path':p.path, 'description':p.description}
         d[p.painting_name] = v
         print(d)
@@ -235,24 +267,30 @@ def upload_img():
 
     full_path, shown_name = be.upload_painting(author, name, file, training_files)
     print("full path is", full_path)
-    db_add_new_painting(author, shown_name, full_path)
+    database.db_add_new_painting(author, shown_name, full_path)
     response = make_response(jsonify(full_path), 200)
     time.sleep(5)
     return response
 
+@app.route("/",methods=['GET', 'POST'])
+def init():
+    a = be.generateUserId()
+    session['User'] = a
+    print(a)
+    return redirect(url_for('start'))
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/start", methods=["GET", "POST"])
 def start():
     painting = None
     author = None
     museum = database.Museums.query.order_by(database.Museums.id).first()
-    # change()
-    # print(AI.torch.cuda.is_available())
-    # print(AI.torch.version.cuda)
-    # add_new_created_img(p.path)
-    # fill()
 
-    return render_template('start.html', selectedPainting=painting, museum=museum.museum)
+
+    createdimgs=database.Createdimgs.query.order_by(database.Createdimgs.path).all()
+    for created in createdimgs:
+        print("created",created)
+    print('User already present', session['User'])
+    return render_template('start.html', selectedPainting=painting, museum=museum.museum, Userid=session['User'])
 
 
 @app.route("/getPainting", methods=["POST"])
@@ -275,9 +313,7 @@ def get_all():
 
     for sub_folder in os.listdir(painting_dir):
         print(sub_folder)
-        sub_folder_dir = "./static/images/" + sub_folder
-        for image in os.listdir(sub_folder_dir):
-            d[image] = sub_folder_dir + "/" + image
+
     for colle in collection_dir:
         if os.listdir(colle.collection_path) is not None:
             for painting in os.listdir(colle.collection_path):
@@ -287,10 +323,7 @@ def get_all():
                 p = database.Paintings.query.filter_by(path=colle.collection_path+"/"+painting).first()
                 d[p.painting_name] = p.path
 
-    d["Botticelli, Birth of Venus"] = "/static/images/Botticelli/Botticelli,Birth of Venus.jpg"
-    # for i in range(len(res2)):
-    #   t = Painting_temp.query.filter_by(id=i).first()
-    #  d[t.painting] = t.path
+
     print("end_d", d)
     response = jsonify(d)
     return response
@@ -299,11 +332,13 @@ def get_all():
 @app.route("/game", methods=['GET', 'POST'])
 def game():
     print('path', session.get('path'))
+    print(session.get('name'))
+    p= 'static/images/MyFirstCollection/Leonardo da Vinci, Gioconda.jpg'
     museum = database.Museums.query.order_by(database.Museums.id).first()
-    # paint = Painting_temp.query.filter_by(painting=session.get('name')).first()
-    # path = paint.path
-    # print('path2', path)
-    return render_template("index.html", paintingName=session.get('name'), path=session.get('path'),museum=museum.museum)
+    print('\n \n gioconda')
+
+    return render_template("index.html", paintingName=session.get('name'), path=session.get('path'),
+                           museum=museum.museum,Userid=session['User'])
 
 
 @app.route("/postDescription", methods=['POST'])
@@ -332,39 +367,84 @@ def generate():
     training_prompt = ""
     print(session.get('name'))
     print(session.get('path'))
-    # original_p = Painting_temp.query.filter_by(painting=session.get('name')).first()
-
-    print("final image", final)
+    orig = database.Paintings.query.filter_by(painting_name=session.get('name')).first()
+    print(orig)
+    created = database.Createdimgs.query.filter_by(original=orig.path).first()
+    print(created)
+    # orig_path = 'static/MyFirst/Collection'+orig_name+'.jpg'
+    similarity = be.image_compare(orig.path, created.path)
+    print(similarity)
+    session['similarity'] = similarity
+    """TBD add REST call"""
     # same_paint = Created_Imgs.query.filter_by(original=original_p.path).all()
     # l = len(same_paint)+1
-    painting_path = created_images_dir + "Botticelli, Venere1.jpg"
+    painting_path = created.path
     session['AI_image'] = painting_path  # keeps the image in memory for all the duration of the session
+    print(session.get('AI_image'))
     response="200" # sends back generated image
     return response
+@app.route("/get_similarity",methods=['GET'])
+def get_similarity():
 
-
+    simil=session.get('similarity',None)
+    response=jsonify(simil)
+    return response
+@app.route("/compare_imgs",methods=['POST,GET'])
+def compare():
+    AI_image = session.get('AI_image', None)
+    orig_name = session.get('name', None)
+    orig=database.Paintings.query.filter_by(painting_name=orig_name).first()
+    print(orig)
+    created = database.Createdimgs.query.filter_by(original=orig.path).first()
+    print(created)
+    #orig_path = 'static/MyFirst/Collection'+orig_name+'.jpg'
+    similarity = be.image_compare(orig.path,AI_image )
+    response = jsonify(similarity)
+    return response
 @app.route("/result", methods=['POST', 'GET'])
 def final():
     AI_image = session.get('AI_image', None)
     print('ass', AI_image)
-    # original_path = session.get('path', None)
-    # original_name = session.get('name', None)
-    # add_new_created_img(original_name, AI_image)
-    #res1 = database.Created_Imgs.query.with_entities(database.Created_Imgs.path).all()
+    original_name = session.get('name', None)
+    db_orig = database.Paintings.query.filter_by(painting_name=original_name).first()
+    if db_orig:
+        description = db_orig.description
+    else:
+        description = 'description not found'
     museum = database.Museums.query.order_by(database.Museums.id).first()
-    #print("ada", res1)
-    # print("or", original_path)
-    return render_template("final.html", original_path="static/images/Botticelli/Botticelli,Birth of Venus.jpg",
-                           original_name="botticelli, birth of venus", AI_image=AI_image, museum=museum.museum)
+    return render_template("final.html", original_path=session.get('path',None),
+                           original_name=original_name, AI_image=AI_image, museum=museum.museum,
+                           description=description)
+
 
 
 @app.route("/userCollection")
 def userCollection():
+    original= session.get('name')
+    paint = database.Paintings.query.filter_by(painting_name=original).first()
     AI_image = session.get('AI_image', None)
     museum = database.Museums.query.order_by(database.Museums.id).first()
     return render_template('user-collection.html',
-                           original_path="static/images/Botticelli/Botticelli,Birth of Venus.jpg",
-                           AI_image=AI_image,museum=museum.museum)
+                           original_path=paint.path,
+                           AI_image=AI_image, museum=museum.museum, Userid=session['User'])
+
+@app.route("/userCollection/getUserImgs",methods=['GET','POST'])
+def getuserImgs():
+    dict = {}
+    created = database.Createdimgs.query.filter_by(User='User#63664').all()
+    for c in created:
+    
+        orig = database.Paintings.query.filter_by(path=c.original).first()
+
+        v={'original_path': c.original, 'original_name':orig.painting_name, 'description':orig.description}
+        print("adad", v)
+        print(c.path)
+        dict[c.path]=v
+
+    print("adadadad", dict)
+    print(dict.keys())
+    response = jsonify(dict)
+    return response
 
 
 @app.route("/vote", methods=['GET', 'POST'])
@@ -378,16 +458,16 @@ def vote():
 @app.route("/get_created", methods=['GET'])
 def get_similar_creation():
     print("xd", session.get('name', None))
-    orig = database.Painting_temp.query.filter_by(painting=session.get('name')).first()
-    print("ar", orig)
-    res = database.Created_Imgs.query.filter_by(original=orig.path).all()
-    d = {}
-    for entry in res:
-        print(entry)
-        d[entry.path] = entry.votes
-    print("end_d", d)
-    response = jsonify(d)
-    return d
+    #orig = database.Painting_temp.query.filter_by(painting=session.get('name')).first()
+    #print("ar", orig)
+    #res = database.Created_Imgs.query.filter_by(original=orig.path).all()
+    #d = {}
+    #for entry in res:
+     #   print(entry)
+     #   d[entry.path] = entry.votes
+    # print("end_d", d)
+    # response = jsonify(d)
+    # return d
 
 
 @app.route("/votes_update", methods=['GET', 'POST'])
@@ -406,44 +486,7 @@ def increase_votes():
     return jsonify(response)
 
 
-def add_new_created_img(original_name, AI_image):
-    db.session.query(database.Created_Imgs)
-    ori = database.Painting_temp.query.filter_by(painting=original_name).first()
-    same_paint = database.Created_Imgs.query.filter_by(original=ori.path).all()
-    print("sane", same_paint)
-    l = len(same_paint)
-    print("l", l)
 
-    same_paint = database.Created_Imgs(id=l + 1, path=AI_image, original=ori.path, votes=0)
-    print(same_paint)
-    db.session.add(same_paint)
-    print(database.Created_Imgs.query.filter_by(original=ori.path).all())
-    print("length after", l)
-    print(same_paint)
-    print(type(same_paint))
-    db.session.commit()
-
-
-def db_add_new_painting(author, painting_name, path):
-    paintings = db.session.query(database.Paintings)
-    print("x", paintings)
-    pt = db.session.query(database.Painting_temp)
-    print(pt)
-    r = database.Painting_temp.query.count()
-    print(r)
-    rows = database.Paintings.query.filter_by(aut=author).first()
-    print("c", rows)
-    if database.Paintings.query.filter_by(aut=author).first() is None:
-        print("no entry for author")
-        rows = 0
-    else:
-        rows = database.Paintings.query.filter_by(aut=author).count()
-        print(rows)
-    print(rows)
-
-    new_painting_entry = database.Paintings(id=rows + 1, path=path, aut=author, painting=painting_name)
-    print("new entry", new_painting_entry)
-    db.session.add(new_painting_entry)
 
 
 def fill_ft():
@@ -451,7 +494,6 @@ def fill_ft():
 
 
 def fill():
-    db.session.query(database.Painting_temp).delete()
     db.session.query(database.Finetuning).delete()
     db.session.commit()
     id = 0
@@ -479,22 +521,9 @@ def fill():
                     x = x.replace('_', ' ')
                 print(x)
                 temp = dir + j
-                painting = database.Painting_temp.query.filter_by(path=temp).first()
-                if painting is None:
-                    painting = database.Painting_temp(id=id, path=temp, aut=i, painting=x)
-                    print("afafaf", painting)
-                    db.session.add(painting)
+
                 id += 1
     db.session.commit()
 
 
 
-@app.route("/remove_painting", methods=['POST', 'GET'])
-def delete():
-    entry = request.get_json()
-    print(entry)
-    be.delete_painting(entry.get("author"), entry.get("painted"))
-    f = str(entry.get("painted")) + "was deleted"
-    print(f)
-    response = jsonify(f)
-    return response
