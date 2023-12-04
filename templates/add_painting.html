@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% block head %}
+    <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Add Painting</title>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'></link>
 </head>
-<body>
+{% endblock %}
 {% block body %}
     <div class="title">
             <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
@@ -28,7 +30,7 @@
         </div>
    </div>
 
-   <div class="border border-secondary p-3 mb-5 bg-body rounded">
+   <div class="border border-secondary  p-3 m-3 bg-body rounded">
         <form method="POST" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
                 {{ form.collection_select.label(class='form-label') }}
@@ -48,8 +50,8 @@
                 {{ form.description.label(class='form-label') }}
                 {{ form.description(class='form-control')}}
                 <br/>
-            <h5>insert the description for training</h5>
-            {{ form.training_text.label(class='form-label') }}
+            <h5>Insert the description for training</h5>
+            <p>This description should focus on the details of the background</p>
             {{ form.training_text(class='form-control')}}
             <br/>
                 {{ form.submit(class='submitButton w-25 ') }}

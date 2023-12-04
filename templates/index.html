@@ -18,12 +18,7 @@
 </head>
 <body >
 {% block body %}
-    <filter id="filter">
-      <feGaussianBlur stdDeviation="5" />
-    </filter>
-    <mask id="mask">
-      <ellipse cx="50%" cy="50%" rx="25%" ry="25%" fill="white" filter="url(#filter)"></ellipse>
-    </mask>
+
     <div class="header">
         <div class="title">
             <img class="placeholder-icon" width="40" height="40" src="/static/css/assets/appLogo.png">
@@ -48,7 +43,7 @@
         <div class="part top-part">
             <!-- Text on the left side -->
             <div class="text">
-                <p>Selected painting</p>
+                <p>Selected painting:</p>
                 <h4>{{ paintingName }}</h4>
             </div>
                 <div class="image">
@@ -58,7 +53,7 @@
 
         <div class="part bottom-part">
             <div class="separator"></div>
-            <h5 style="color: #707070">Describe the details of the background of the image</h5>
+            <h5 style="color: #707070">Describe the details of the image background</h5>
                 <!-- Text box and submit button -->
             <textarea class="centered-textarea" id="textbox" rows="4" placeholder="Enter your text"></textarea>
             <br>

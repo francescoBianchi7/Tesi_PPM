@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% block head %}
+    <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Comapatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, intial-scale=1.0">
+    <title>Back-end</title>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'></link>
 </head>
-<body>
+{% endblock %}
 
 {% block body %}
     <div class="header">
@@ -18,6 +20,9 @@
                     <h4 style="color: #707070">{{ museum_name }}</h4>
                 </div>
             </div>
+    </div>
+     <div id="canvasContainer" style="display: none;">
+        <canvas id="imageCanvas"></canvas>
     </div>
    <div id="popup-window">
           <div class="popup-text">
@@ -36,7 +41,6 @@
     <div class="centered-content">
             <div class="select-box">
                 <select  id="collection_list"  onchange=paints_by_collection()></select>
-
             </div>
     </div>
     <div class="collection-container" id="be-container">
@@ -47,5 +51,7 @@
 {% block script %}
     <script type="module"
             src="{{ url_for('static',filename='js/back-end.js') }}"></script>
+<script type="module"
+            src="{{ url_for('static',filename='js/drawCanvas.js') }}"></script>
 {% endblock %}
 </html>

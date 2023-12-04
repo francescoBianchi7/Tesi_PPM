@@ -45,8 +45,7 @@
 
     {% for our_user in our_users %}
 	<tr>
-	<td>{{ our_user.id }}. {{ our_user.collection_name}}--path:{{ our_user.collection_path }}--
-	museum: {{ our_user.museum }} -
+	<td>{{ our_user.id }}. {{ our_user.collection_name}} ---
 	<a href="{{ url_for('delete_collection', id=our_user.id)}}">Delete</a></td>
 	</tr>
     {% endfor %}
