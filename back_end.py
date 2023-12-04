@@ -13,16 +13,18 @@ import numpy as np
 from datetime import datetime
 import torch
 import open_clip
-
 from sentence_transformers import util
+
 from PIL import Image
 import random
 import cv2
+import base64
+from io import BytesIO
+import re
 
-from roboflow import Roboflow
 from matplotlib import pyplot as plt
 
-
+blur_dir="static/blurred_imgs/"
 imgdir = "static/images/"
 # FORMS
 class PswForm(FlaskForm):
@@ -102,7 +104,7 @@ def image_compare(orig, created):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-16-plus-240', pretrained="laion400m_e32")
     model.to(device)
-    score = generateScore(orig,created,preprocess, model, device)
+    score = generateScore(orig, created, preprocess, model, device)
     return score
 def imageEncoder(img,preprocess,model,device):
     img1 = Image.fromarray(img).convert('RGB')
@@ -110,11 +112,14 @@ def imageEncoder(img,preprocess,model,device):
     img1 = model.encode_image(img1)
     return img1
 
-def generateScore(image1, image2,preprocess,model,device):
-    test_img = cv2.imread(image1, cv2.IMREAD_UNCHANGED)
-    data_img = cv2.imread(image2, cv2.IMREAD_UNCHANGED)
-    img1 = imageEncoder(test_img,preprocess,model,device)
-    img2 = imageEncoder(data_img,preprocess,model,device)
+def generateScore(orig, created,preprocess,model,device):
+    # apre l'immagine tramite opencv2
+    original_img = cv2.imread(orig, cv2.IMREAD_UNCHANGED)
+    created_img = cv2.imread(created, cv2.IMREAD_UNCHANGED)
+    #la funzione imageEncoder converte l'immagine in un array
+    img1 = imageEncoder(original_img, preprocess, model, device)
+    img2 = imageEncoder(created_img, preprocess, model, device)
+    #calcolo tasso similarità tramite pytorch
     cos_scores = util.pytorch_cos_sim(img1, img2)
     score = round(float(cos_scores[0][0]) * 100, 2)
     return score
@@ -124,3 +129,11 @@ def generateUserId():
     a = f'{random.randrange(1, 10 ** 5):05}'
     use= 'User#'+a
     return use
+
+def save_blurred_img(blurred, name):
+    image_data = re.sub('^data:image/.+;base64,', '', blurred)
+    im = Image.open(BytesIO(base64.b64decode(image_data)))
+    path = blur_dir+name+'(blur).png'
+    print('saved_path', path)
+    im.save(path)
+    return path

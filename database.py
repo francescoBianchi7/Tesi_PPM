@@ -21,7 +21,7 @@ migrate = Migrate(app, db)
 #FLASK LOGIN
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view= 'login'
+login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_museum(museum_id):
@@ -72,6 +72,7 @@ class Paintings(db.Model):
     collection = db.Column(db.Integer, db.ForeignKey('collection.id'))
     finetuning_path = db.Column(db.String(400))
     finetuning_description = db.Column(db.String(400), nullable=False)
+    blur_imgs = db.Column(db.String(400))
     created_imgs = db.relationship('Createdimgs', backref='createdimgs')
 
     def __repr__(self):
